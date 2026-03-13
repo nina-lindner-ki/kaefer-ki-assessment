@@ -1,0 +1,1713 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>KAEFER KI-Reifegrad-Assessment</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+:root {
+  --navy: #1B3A5C;
+  --navy-light: #24517d;
+  --red: #C0392B;
+  --red-light: #e74c3c;
+  --text: #444444;
+  --text-light: #777777;
+  --bg: #F8F9FA;
+  --white: #FFFFFF;
+  --green: #2E7D32;
+  --green-light: #4CAF50;
+  --info: #F2F2F2;
+  --shadow: 0 2px 12px rgba(27, 58, 92, 0.08);
+  --shadow-lg: 0 8px 32px rgba(27, 58, 92, 0.12);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font);
+  color: var(--text);
+  background: var(--bg);
+  min-height: 100vh;
+  min-height: 100dvh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.screen {
+  display: none;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.screen.active {
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ==================== START SCREEN ==================== */
+#screen-start {
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(160deg, var(--navy) 0%, var(--navy-light) 100%);
+  padding: 40px 0;
+}
+
+.start-card {
+  background: var(--white);
+  border-radius: 20px;
+  padding: 40px 32px;
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 480px;
+}
+
+.start-badge {
+  display: inline-block;
+  background: var(--bg);
+  color: var(--navy);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.start-card h1 {
+  font-size: 1.75rem;
+  color: var(--navy);
+  margin-bottom: 8px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.start-card .subline {
+  color: var(--text-light);
+  font-size: 1rem;
+  margin-bottom: 32px;
+  line-height: 1.5;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 6px;
+  font-size: 0.875rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid #E0E4E8;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-family: var(--font);
+  color: var(--text);
+  background: var(--white);
+  transition: border-color var(--transition);
+  outline: none;
+}
+
+.form-group input:focus {
+  border-color: var(--navy);
+}
+
+.form-group input.error {
+  border-color: var(--red);
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 16px 24px;
+  background: var(--navy);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 1.1rem;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all var(--transition);
+  margin-top: 8px;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--navy-light);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(27, 58, 92, 0.3);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.disclaimer {
+  font-size: 0.78rem;
+  color: var(--text-light);
+  margin-top: 20px;
+  line-height: 1.6;
+  background: var(--info);
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  text-align: left;
+}
+
+.disclaimer strong {
+  color: var(--text);
+}
+
+/* ==================== QUESTIONS SCREEN ==================== */
+#screen-questions {
+  background: var(--bg);
+}
+
+.progress-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--white);
+  box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+}
+
+.progress-bar-track {
+  height: 4px;
+  background: #E0E4E8;
+  width: 100%;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--green), var(--green-light));
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 0 2px 2px 0;
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.progress-text {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.progress-dimension {
+  font-size: 0.75rem;
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+.question-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 24px 0 100px 0;
+  min-height: calc(100vh - 60px);
+  min-height: calc(100dvh - 60px);
+}
+
+.question-content {
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.question-content.transitioning {
+  opacity: 0;
+}
+
+.question-text {
+  font-size: 1.2rem;
+  color: var(--navy);
+  font-weight: 600;
+  margin-bottom: 28px;
+  line-height: 1.4;
+}
+
+.answer-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.answer-card {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  background: var(--white);
+  border: 2px solid #E0E4E8;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all var(--transition);
+  font-size: 1rem;
+  color: var(--text);
+  font-family: var(--font);
+  text-align: left;
+  width: 100%;
+  min-height: 52px;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.answer-card:hover {
+  border-color: var(--navy);
+  background: rgba(27, 58, 92, 0.03);
+}
+
+.answer-card:active {
+  transform: scale(0.98);
+}
+
+.answer-card.selected {
+  border-color: var(--navy);
+  background: var(--navy);
+  color: var(--white);
+  box-shadow: 0 2px 8px rgba(27, 58, 92, 0.2);
+}
+
+.answer-card .answer-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--bg);
+  color: var(--navy);
+  font-weight: 700;
+  font-size: 0.8rem;
+  margin-right: 14px;
+  flex-shrink: 0;
+  transition: all var(--transition);
+}
+
+.answer-card.selected .answer-number {
+  background: rgba(255,255,255,0.2);
+  color: var(--white);
+}
+
+.answer-card .answer-label {
+  flex: 1;
+}
+
+.answer-card .answer-check {
+  opacity: 0;
+  transition: opacity var(--transition);
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
+.answer-card.selected .answer-check {
+  opacity: 1;
+}
+
+/* Question navigation */
+.question-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--white);
+  border-top: 1px solid #E0E4E8;
+  padding: 14px 20px;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  z-index: 100;
+}
+
+.question-nav .container-nav {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  max-width: 640px;
+}
+
+.btn-nav {
+  flex: 1;
+  padding: 14px 20px;
+  border: 2px solid #E0E4E8;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all var(--transition);
+  background: var(--white);
+  color: var(--text);
+}
+
+.btn-nav:hover:not(:disabled) {
+  border-color: var(--navy);
+  color: var(--navy);
+}
+
+.btn-nav.btn-next {
+  background: var(--navy);
+  color: var(--white);
+  border-color: var(--navy);
+}
+
+.btn-nav.btn-next:hover:not(:disabled) {
+  background: var(--navy-light);
+  border-color: var(--navy-light);
+}
+
+.btn-nav:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ==================== RESULTS SCREEN ==================== */
+#screen-results {
+  background: var(--bg);
+  padding-bottom: 40px;
+}
+
+.results-header-bar {
+  background: linear-gradient(160deg, var(--navy) 0%, var(--navy-light) 100%);
+  padding: 40px 20px 60px 20px;
+  text-align: center;
+  color: var(--white);
+}
+
+.results-header-bar h1 {
+  font-size: 1.5rem;
+  margin-bottom: 4px;
+}
+
+.results-header-bar .subtitle {
+  opacity: 0.85;
+  font-size: 1rem;
+}
+
+.results-body {
+  max-width: 640px;
+  margin: -40px auto 0 auto;
+  padding: 0 20px;
+}
+
+.results-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px 24px;
+  margin-bottom: 16px;
+}
+
+.chart-container {
+  max-width: 380px;
+  margin: 0 auto;
+  padding: 10px 0;
+}
+
+.chart-legend {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 12px;
+  font-size: 0.8rem;
+  color: var(--text-light);
+}
+
+.chart-legend span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chart-legend .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.score-display {
+  text-align: center;
+  margin: 20px 0 12px 0;
+}
+
+.score-number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1;
+}
+
+.score-label {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 6px 20px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+}
+
+.score-label.einsteiger { background: #FFF3E0; color: #E65100; }
+.score-label.entdecker { background: #E3F2FD; color: #1565C0; }
+.score-label.anwender { background: #E8F5E9; color: var(--green); }
+.score-label.vorreiter { background: #F3E5F5; color: #7B1FA2; }
+
+.baseline-note {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-light);
+  margin-top: 8px;
+  padding: 10px 16px;
+  background: var(--info);
+  border-radius: var(--radius-sm);
+}
+
+.reifegrad-desc {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text);
+  padding: 16px;
+  background: var(--info);
+  border-radius: var(--radius-sm);
+  margin-top: 16px;
+}
+
+/* Dimension detail bars */
+.dimension-detail {
+  display: flex;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.dimension-detail:last-child {
+  margin-bottom: 0;
+}
+
+.dim-name {
+  width: 120px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--navy);
+  flex-shrink: 0;
+  line-height: 1.2;
+}
+
+.dim-bar-track {
+  flex: 1;
+  height: 10px;
+  background: #E0E4E8;
+  border-radius: 5px;
+  margin: 0 10px;
+  overflow: hidden;
+}
+
+.dim-bar-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--navy);
+}
+
+.dim-score {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--navy);
+  width: 32px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Feedback section */
+.feedback-card {
+  border-left: 4px solid var(--green);
+}
+
+.feedback-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.feedback-text {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--text);
+}
+
+.thinking-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+.thinking-dots {
+  display: flex;
+  gap: 4px;
+}
+
+.thinking-dots span {
+  width: 6px;
+  height: 6px;
+  background: var(--navy);
+  border-radius: 50%;
+  animation: thinking 1.2s ease-in-out infinite;
+}
+
+.thinking-dots span:nth-child(2) { animation-delay: 0.15s; }
+.thinking-dots span:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes thinking {
+  0%, 60%, 100% { opacity: 0.3; transform: scale(0.8); }
+  30% { opacity: 1; transform: scale(1); }
+}
+
+/* Action buttons */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 15px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all var(--transition);
+  border: 2px solid;
+  width: 100%;
+}
+
+.btn-action.pdf {
+  background: var(--navy);
+  color: var(--white);
+  border-color: var(--navy);
+}
+
+.btn-action.pdf:hover {
+  background: var(--navy-light);
+  border-color: var(--navy-light);
+}
+
+.btn-action.email {
+  background: var(--white);
+  color: var(--navy);
+  border-color: var(--navy);
+}
+
+.btn-action.email:hover {
+  background: var(--navy);
+  color: var(--white);
+}
+
+.btn-action.retry {
+  background: var(--white);
+  color: var(--text-light);
+  border-color: #E0E4E8;
+}
+
+.btn-action.retry:hover {
+  border-color: var(--text-light);
+  color: var(--text);
+}
+
+/* ==================== PDF TEMPLATE ==================== */
+#pdf-template {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  width: 700px;
+  font-family: var(--font);
+  color: var(--text);
+  background: var(--white);
+}
+
+.pdf-header {
+  background: var(--navy);
+  color: var(--white);
+  padding: 28px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pdf-header h2 {
+  font-size: 1.3rem;
+  margin: 0;
+}
+
+.pdf-header .pdf-meta {
+  font-size: 0.8rem;
+  opacity: 0.85;
+  text-align: right;
+}
+
+.pdf-body {
+  padding: 28px 32px;
+}
+
+.pdf-score-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--info);
+}
+
+.pdf-score-big {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.pdf-label {
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 6px 16px;
+  border-radius: 16px;
+}
+
+.pdf-chart-img {
+  display: block;
+  margin: 16px auto;
+  max-width: 350px;
+}
+
+.pdf-dims {
+  margin: 20px 0;
+}
+
+.pdf-dim-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--info);
+  font-size: 0.9rem;
+}
+
+.pdf-dim-row span:first-child {
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.pdf-feedback {
+  background: var(--info);
+  border-left: 4px solid var(--green);
+  padding: 16px 20px;
+  margin: 20px 0;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.pdf-footer {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-light);
+  padding: 16px 32px;
+  border-top: 1px solid var(--info);
+}
+
+/* ==================== ANIMATIONS ==================== */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+.scale-in {
+  animation: scaleIn 0.4s ease forwards;
+}
+
+.stagger-1 { animation-delay: 0.1s; opacity: 0; }
+.stagger-2 { animation-delay: 0.2s; opacity: 0; }
+.stagger-3 { animation-delay: 0.3s; opacity: 0; }
+.stagger-4 { animation-delay: 0.4s; opacity: 0; }
+.stagger-5 { animation-delay: 0.5s; opacity: 0; }
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 480px) {
+  .start-card {
+    padding: 28px 22px;
+    border-radius: 16px;
+  }
+
+  .start-card h1 {
+    font-size: 1.5rem;
+  }
+
+  .question-text {
+    font-size: 1.1rem;
+  }
+
+  .answer-card {
+    padding: 14px 16px;
+    font-size: 0.95rem;
+  }
+
+  .score-number {
+    font-size: 2rem;
+  }
+
+  .dim-name {
+    width: 90px;
+    font-size: 0.75rem;
+  }
+
+  .results-card {
+    padding: 22px 18px;
+  }
+
+  .chart-container {
+    max-width: 300px;
+  }
+}
+
+@media (min-width: 768px) {
+  .start-card {
+    padding: 48px 40px;
+  }
+
+  .question-text {
+    font-size: 1.35rem;
+  }
+
+  .answer-card {
+    padding: 18px 24px;
+  }
+
+  .results-header-bar {
+    padding: 50px 20px 70px 20px;
+  }
+}
+
+/* Mobile keyboard fix */
+@media (max-height: 500px) {
+  #screen-start {
+    padding: 20px 0;
+  }
+
+  .start-card {
+    padding: 20px;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== APP ==================== -->
+<div id="app">
+
+  <!-- ===== START SCREEN ===== -->
+  <div id="screen-start" class="screen active">
+    <div class="container" style="display:flex; justify-content:center; align-items:center; flex:1;">
+      <div class="start-card">
+        <div class="start-badge">KAEFER KI-Programm 2026</div>
+        <h1>Wo stehst du mit KI?</h1>
+        <p class="subline">Dein persönlicher KI-Reifegrad in 3 Minuten.<br>Keine Anmeldung, kein Test — nur eine ehrliche Standortbestimmung.</p>
+
+        <div class="form-group">
+          <label for="input-name">Vorname</label>
+          <input type="text" id="input-name" placeholder="Dein Vorname" autocomplete="given-name">
+        </div>
+        <div class="form-group">
+          <label for="input-dept">Abteilung</label>
+          <input type="text" id="input-dept" list="dept-list" placeholder="z.B. Kalkulation, HR, Bauleitung...">
+          <datalist id="dept-list">
+            <option value="Kalkulation">
+            <option value="Bauleitung">
+            <option value="Projektmanagement">
+            <option value="HR / Personal">
+            <option value="Einkauf">
+            <option value="Vertrieb">
+            <option value="Finanzen / Controlling">
+            <option value="IT">
+            <option value="Isolierung">
+            <option value="Brandschutz">
+            <option value="Oberflächenschutz">
+            <option value="Gerüstbau">
+            <option value="HSEQ">
+            <option value="Verwaltung">
+            <option value="Logistik">
+            <option value="Arbeitsvorbereitung">
+          </datalist>
+        </div>
+
+        <button class="btn-primary" id="btn-start" disabled>Los geht's</button>
+        <div class="disclaimer">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px;opacity:0.6"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <strong>Datenschutz:</strong> Dieses Tool läuft komplett in deinem Browser. Deine Antworten werden nirgendwo gespeichert und nicht an Server übertragen. Wenn du dein Ergebnis teilen möchtest, kannst du es als PDF exportieren oder per E-Mail an Nina weiterleiten — aber nur, wenn du das aktiv möchtest.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== QUESTIONS SCREEN ===== -->
+  <div id="screen-questions" class="screen">
+    <div class="progress-wrapper">
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%"></div>
+      </div>
+      <div class="progress-info">
+        <span class="progress-text" id="progress-text">Frage 1 von 15</span>
+        <span class="progress-dimension" id="progress-dimension"></span>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="question-area">
+        <div class="question-content" id="question-content">
+          <h2 class="question-text" id="question-text"></h2>
+          <div class="answer-cards" id="answer-cards"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="question-nav">
+      <div class="container-nav">
+        <button class="btn-nav btn-back" id="btn-back">Zurück</button>
+        <button class="btn-nav btn-next" id="btn-next" disabled>Weiter</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== RESULTS SCREEN ===== -->
+  <div id="screen-results" class="screen">
+    <div class="results-header-bar">
+      <h1 id="results-greeting">Hey!</h1>
+      <p class="subtitle">Dein KI-Reifegrad</p>
+    </div>
+
+    <div class="results-body">
+      <!-- Radar Chart -->
+      <div class="results-card fade-in-up stagger-1">
+        <div class="chart-container">
+          <canvas id="radar-chart"></canvas>
+        </div>
+        <div class="chart-legend">
+          <span><span class="dot" style="background:var(--navy)"></span> Dein Ergebnis</span>
+          <span><span class="dot" style="background:var(--red); opacity:0.5"></span> KAEFER Baseline</span>
+        </div>
+      </div>
+
+      <!-- Score -->
+      <div class="results-card fade-in-up stagger-2">
+        <div class="score-display">
+          <div class="score-number"><span id="score-value">0.0</span> / 5.0</div>
+          <div class="score-label" id="score-label"></div>
+        </div>
+        <p class="baseline-note">Zum Vergleich: KAEFER gesamt lag im Februar 2026 bei 2.1 / 5.0</p>
+        <div class="reifegrad-desc" id="reifegrad-desc"></div>
+      </div>
+
+      <!-- Dimension Details -->
+      <div class="results-card fade-in-up stagger-3" id="dimension-details"></div>
+
+      <!-- AI Feedback -->
+      <div class="results-card feedback-card fade-in-up stagger-4">
+        <div class="feedback-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"/><line x1="9" y1="21" x2="15" y2="21"/></svg>
+          Dein KI-Coach sagt:
+        </div>
+        <div id="feedback-area">
+          <div class="thinking-indicator" id="feedback-loading">
+            <div class="thinking-dots"><span></span><span></span><span></span></div>
+            <span>Dein KI-Coach denkt nach...</span>
+          </div>
+          <div class="feedback-text" id="feedback-text" style="display:none"></div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="results-card fade-in-up stagger-5">
+        <div class="action-buttons">
+          <button class="btn-action pdf" id="btn-pdf">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            Als PDF speichern
+          </button>
+          <button class="btn-action email" id="btn-email">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Ergebnis an Nina senden
+          </button>
+          <button class="btn-action retry" id="btn-retry">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            Nochmal machen
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Hidden PDF template -->
+<div id="pdf-template"></div>
+
+<script>
+// ==================== CONFIGURATION ====================
+// Anthropic API Key: Setze hier deinen API Key ein, um personalisiertes
+// KI-Feedback zu erhalten. Ohne Key wird ein lokaler Feedback-Generator genutzt.
+const ANTHROPIC_API_KEY = '';
+
+// ==================== QUESTIONS DATA ====================
+const DIMENSIONS = [
+  'KI-Verständnis & Orientierung',
+  'Anwendung im Arbeitsalltag',
+  'Prompt-Kompetenz & AI Chat',
+  'Spielregeln & Datenbewusstsein',
+  'Veränderung & Weitergabe'
+];
+
+const DIM_SHORT = ['Verständnis', 'Anwendung', 'Prompting', 'Spielregeln', 'Veränderung'];
+
+const KAEFER_BASELINE = [2.2, 2.6, 2.2, 1.4, 2.2];
+
+const QUESTIONS = [
+  // Dimension 1: KI-Verständnis & Orientierung
+  { dim: 0, text: 'Wenn ein Kollege fragt „Was macht der KAEFER AI Chat eigentlich?" — könntest du das in zwei Sätzen erklären?', answers: [
+    'Nein, ich wüsste nicht, was ich sagen soll',
+    'Ich könnte sagen, dass es irgendwas mit KI zu tun hat',
+    'Ich könnte grob erklären, dass man damit Texte erstellen kann',
+    'Ja — ein KI-Tool, mit dem man Texte, Analysen und mehr erstellen kann',
+    'Ja klar — inklusive warum KAEFER einen eigenen AI Chat nutzt'
+  ]},
+  { dim: 0, text: 'Weißt du, warum KI manchmal überzeugend klingt, aber trotzdem falsch liegt — sogenannte „Halluzinationen"?', answers: [
+    'Nein, davon höre ich zum ersten Mal',
+    'Den Begriff habe ich gehört, verstehe ihn aber nicht richtig',
+    'Ungefähr — KI erfindet manchmal Sachen',
+    'Ja, ich verstehe das und weiß, dass man Ergebnisse prüfen muss',
+    'Ja, ich kann erklären, warum das passiert und wie man damit umgeht'
+  ]},
+  { dim: 0, text: 'Ist dir klar, was KI gut kann (z.\u202FB. Texte erstellen, Daten auswerten) und was nicht (z.\u202FB. eigenständig Entscheidungen treffen)?', answers: [
+    'Nein, ich bin unsicher, was KI kann und was nicht',
+    'Ich habe eine grobe Vorstellung, bin aber nicht sicher',
+    'Teilweise — ich kenne einige Stärken, aber nicht die Grenzen',
+    'Ja, ich habe ein gutes Bild von Möglichkeiten und Grenzen',
+    'Ja, sehr klar — ich könnte das auch anderen erklären'
+  ]},
+  // Dimension 2: Anwendung im Arbeitsalltag
+  { dim: 1, text: 'Wie oft öffnest du den KAEFER AI Chat (aichat.kaefer.com) für eine echte Arbeitsaufgabe — nicht zum Testen, sondern um etwas zu erledigen?', answers: [
+    'Noch nie — ich habe den AI Chat noch nicht genutzt',
+    'Ein- oder zweimal bisher ausprobiert',
+    'Ab und zu, wenn mir eine passende Aufgabe einfällt',
+    'Regelmäßig, mehrmals pro Woche',
+    'Fast täglich — der AI Chat gehört zu meinem Arbeitsalltag'
+  ]},
+  { dim: 1, text: 'Hast du mit dem AI Chat schon ein konkretes Ergebnis erstellt, das du tatsächlich verwendet hast — z.\u202FB. eine E-Mail, eine Zusammenfassung, eine Checkliste?', answers: [
+    'Nein, noch kein Ergebnis erstellt',
+    'Ich habe etwas ausprobiert, aber nichts weiterverwendet',
+    'Ja, ein oder zwei Sachen — z.\u202FB. eine E-Mail oder einen Text',
+    'Ja, mehrere Ergebnisse, die ich direkt nutzen konnte',
+    'Ja, regelmäßig — E-Mails, Zusammenfassungen, Checklisten und mehr'
+  ]},
+  { dim: 1, text: 'Nutzt du Funktionen im AI Chat über das reine Chatten hinaus — z.\u202FB. Instructions, Presets oder Silos?', answers: [
+    'Nein, diese Funktionen kenne ich nicht',
+    'Davon gehört, aber noch nichts ausprobiert',
+    'Ich habe eine der Funktionen mal angeschaut',
+    'Ja, ich nutze z.\u202FB. Instructions oder Presets gelegentlich',
+    'Ja, ich nutze mehrere dieser Funktionen aktiv'
+  ]},
+  // Dimension 3: Prompt-Kompetenz & AI Chat
+  { dim: 2, text: 'Wenn der AI Chat ein schlechtes Ergebnis liefert — versuchst du den Prompt zu verbessern, oder gibst du eher auf?', answers: [
+    'Ich gebe eher auf oder frage jemand anderen',
+    'Ich versuche es nochmal, aber mit ähnlichem Text',
+    'Manchmal formuliere ich den Prompt etwas um',
+    'Ja, ich versuche gezielt, den Prompt zu verbessern',
+    'Ja, ich arbeite systematisch am Prompt, bis das Ergebnis passt'
+  ]},
+  { dim: 2, text: 'Nutzt du Techniken wie: der KI eine Rolle geben, Kontext mitliefern, Beispiele zeigen oder das Ergebnis schrittweise eingrenzen?', answers: [
+    'Nein, diese Techniken kenne ich nicht',
+    'Davon gehört, aber ich nutze sie nicht bewusst',
+    'Manchmal gebe ich mehr Kontext, aber eher intuitiv',
+    'Ja, ich nutze einige dieser Techniken bewusst',
+    'Ja, regelmäßig — Rolle, Kontext und Beispiele gehören bei mir dazu'
+  ]},
+  { dim: 2, text: 'Kennst du den Prompt-Verbesserer im AI Chat? (Er analysiert deinen Prompt und schlägt eine bessere Version vor — unter „Dein Support" in der Seitenleiste.)', answers: [
+    'Nein, davon höre ich zum ersten Mal',
+    'Gehört, aber noch nicht geschaut',
+    'Ich weiß, wo er ist, habe ihn aber noch nicht genutzt',
+    'Ja, ich habe ihn schon ausprobiert',
+    'Ja, ich nutze ihn regelmäßig für bessere Prompts'
+  ]},
+  // Dimension 4: Spielregeln & Datenbewusstsein
+  { dim: 3, text: 'Weißt du, warum KAEFER den eigenen AI Chat nutzt statt öffentlicher Tools wie ChatGPT? (Stichwort: Datenschutz, kein Datenabfluss)', answers: [
+    'Nein, das ist mir nicht klar',
+    'Ich vermute, es hat mit Datenschutz zu tun',
+    'Grob — Daten bleiben intern und fließen nicht nach außen',
+    'Ja: Datenschutz, Kundendaten erlaubt, kein Datenabfluss',
+    'Ja klar — ich könnte das auch Kolleg:innen erklären'
+  ]},
+  { dim: 3, text: 'Wenn du ein KI-Ergebnis bekommst — z.\u202FB. einen Angebotstext oder eine Analyse — prüfst du es, bevor du es weitergibst?', answers: [
+    'Nein, ich übernehme das Ergebnis meistens direkt',
+    'Eher selten — ich schaue nur kurz drüber',
+    'Manchmal, je nach Wichtigkeit der Aufgabe',
+    'Ja, ich prüfe die meisten Ergebnisse auf Richtigkeit',
+    'Ja, immer — KI-Ergebnisse können Fehler enthalten'
+  ]},
+  { dim: 3, text: 'Kennst du die fünf KI-Spielregeln bei KAEFER? (Nur freigegebene Tools, kein Profiling, Ergebnisse prüfen, Kontext ist König, Fehler sind erwünscht)', answers: [
+    'Nein, ich wusste nicht, dass es Spielregeln gibt',
+    'Gehört, dass es Regeln gibt — kenne sie aber nicht',
+    'Ich kenne ein oder zwei davon',
+    'Ja, die meisten sind mir bekannt',
+    'Ja, alle fünf — und ich halte mich daran'
+  ]},
+  // Dimension 5: Veränderung & Weitergabe
+  { dim: 4, text: 'Siehst du in deinem Arbeitsalltag konkrete Aufgaben, bei denen der AI Chat dir Zeit sparen könnte?', answers: [
+    'Nein, mir fällt nichts ein',
+    'Vielleicht, aber ich bin mir nicht sicher',
+    'Ja, ein oder zwei Aufgaben könnte ich mir vorstellen',
+    'Ja, ich sehe mehrere Einsatzmöglichkeiten',
+    'Ja, definitiv — ich habe eine klare Liste im Kopf'
+  ]},
+  { dim: 4, text: 'Wärst du bereit, einen guten Prompt als öffentliches Preset im AI Chat zu speichern, damit Kolleg:innen ihn nutzen können?', answers: [
+    'Nein, das traue ich mich eher nicht',
+    'Vielleicht, wenn mir jemand dabei hilft',
+    'Grundsätzlich schon — wenn ich einen guten Prompt hätte',
+    'Ja, das würde ich gerne machen',
+    'Ja klar — ich habe sogar schon Ideen für nützliche Presets'
+  ]},
+  { dim: 4, text: 'Wenn ein Kollege sagt „KI bringt mir nichts" — hättest du ein Beispiel parat, das ihn vom Gegenteil überzeugt?', answers: [
+    'Nein, mir fällt spontan kein Beispiel ein',
+    'Ich könnte allgemein sagen, dass KI nützlich ist',
+    'Ich hätte ein vages Beispiel, aber nichts Konkretes',
+    'Ja, ein konkretes Beispiel aus meinem Arbeitsalltag',
+    'Ja, sofort — ich könnte mehrere überzeugende Beispiele nennen'
+  ]}
+];
+
+const REIFEGRAD = [
+  { min: 1.0, max: 2.0, label: 'KI-Einsteiger', css: 'einsteiger', desc: 'Du stehst am Anfang deiner KI-Reise — und genau dafür gibt es das Botschafter-Programm. Keine Sorge: In den nächsten Wochen wirst du Schritt für Schritt sicherer.' },
+  { min: 2.1, max: 3.0, label: 'KI-Entdecker', css: 'entdecker', desc: 'Du hast erste Erfahrungen gesammelt und ein Grundverständnis aufgebaut. Jetzt geht es darum, KI regelmäßig in deinen Alltag zu integrieren — das Training hilft dir dabei.' },
+  { min: 3.1, max: 4.0, label: 'KI-Anwender', css: 'anwender', desc: 'Du nutzt KI schon gezielt und verstehst, worauf es ankommt. Jetzt kannst du anderen helfen und Use Cases für deine Abteilung entwickeln.' },
+  { min: 4.1, max: 5.0, label: 'KI-Vorreiter', css: 'vorreiter', desc: 'Du bist vorne dabei! Dein Wissen ist wertvoll für die Community. Teile deine Erfahrungen, hilf anderen beim Einstieg und treibe die Use Cases in deiner Abteilung voran.' }
+];
+
+// ==================== STATE ====================
+const state = {
+  name: '',
+  dept: '',
+  currentQuestion: 0,
+  answers: new Array(15).fill(null),
+  scores: [],
+  gesamtScore: 0,
+  reifegrad: null,
+  feedback: '',
+  radarChart: null
+};
+
+// ==================== DOM ELEMENTS ====================
+const $ = id => document.getElementById(id);
+
+// ==================== SCREEN MANAGEMENT ====================
+function showScreen(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  $(screenId).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ==================== START SCREEN ====================
+const inputName = $('input-name');
+const inputDept = $('input-dept');
+const btnStart = $('btn-start');
+
+function validateStart() {
+  const valid = inputName.value.trim().length > 0;
+  btnStart.disabled = !valid;
+  inputName.classList.toggle('error', inputName.value.length > 0 && !valid);
+}
+
+inputName.addEventListener('input', validateStart);
+inputName.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !btnStart.disabled) btnStart.click();
+});
+inputDept.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !btnStart.disabled) btnStart.click();
+});
+
+btnStart.addEventListener('click', () => {
+  state.name = inputName.value.trim();
+  state.dept = inputDept.value.trim() || 'Nicht angegeben';
+  showScreen('screen-questions');
+  renderQuestion(0);
+});
+
+// ==================== QUESTION RENDERING ====================
+function renderQuestion(index) {
+  state.currentQuestion = index;
+  const q = QUESTIONS[index];
+  const totalQuestions = QUESTIONS.length;
+
+  // Progress
+  const pct = ((index + 1) / totalQuestions) * 100;
+  $('progress-bar-fill').style.width = pct + '%';
+  $('progress-text').textContent = `Frage ${index + 1} von ${totalQuestions}`;
+  $('progress-dimension').textContent = DIMENSIONS[q.dim];
+
+  // Question text
+  $('question-text').textContent = q.text;
+
+  // Answer cards (per-question specific labels)
+  const cardsHtml = q.answers.map((label, i) => {
+    const val = i + 1;
+    const selected = state.answers[index] === val ? ' selected' : '';
+    return `<button class="answer-card${selected}" data-value="${val}" onclick="selectAnswer(${val})">
+      <span class="answer-number">${val}</span>
+      <span class="answer-label">${label}</span>
+      <span class="answer-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+    </button>`;
+  }).join('');
+  $('answer-cards').innerHTML = cardsHtml;
+
+  // Navigation
+  $('btn-back').textContent = index === 0 ? 'Zurück' : 'Zurück';
+  $('btn-next').textContent = index === totalQuestions - 1 ? 'Ergebnis anzeigen' : 'Weiter';
+  $('btn-next').disabled = state.answers[index] === null;
+}
+
+function transitionToQuestion(newIndex, direction) {
+  const el = $('question-content');
+  const offset = direction === 'forward' ? -25 : 25;
+
+  el.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
+  el.style.opacity = '0';
+  el.style.transform = `translateX(${offset}px)`;
+
+  setTimeout(() => {
+    renderQuestion(newIndex);
+    el.style.transition = 'none';
+    el.style.transform = `translateX(${-offset}px)`;
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        el.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+        el.style.opacity = '1';
+        el.style.transform = 'translateX(0)';
+      });
+    });
+  }, 150);
+}
+
+// ==================== ANSWER SELECTION ====================
+function selectAnswer(value) {
+  state.answers[state.currentQuestion] = value;
+
+  document.querySelectorAll('.answer-card').forEach(card => {
+    card.classList.toggle('selected', parseInt(card.dataset.value) === value);
+  });
+
+  $('btn-next').disabled = false;
+}
+
+// ==================== QUESTION NAVIGATION ====================
+$('btn-back').addEventListener('click', () => {
+  if (state.currentQuestion === 0) {
+    showScreen('screen-start');
+  } else {
+    transitionToQuestion(state.currentQuestion - 1, 'backward');
+  }
+});
+
+$('btn-next').addEventListener('click', () => {
+  if (state.answers[state.currentQuestion] === null) return;
+
+  if (state.currentQuestion === QUESTIONS.length - 1) {
+    calculateAndShowResults();
+  } else {
+    transitionToQuestion(state.currentQuestion + 1, 'forward');
+  }
+});
+
+// Keyboard navigation
+document.addEventListener('keydown', e => {
+  if (!$('screen-questions').classList.contains('active')) return;
+
+  if (e.key >= '1' && e.key <= '5') {
+    selectAnswer(parseInt(e.key));
+  } else if (e.key === 'ArrowRight' || e.key === 'Enter') {
+    if (!$('btn-next').disabled) $('btn-next').click();
+  } else if (e.key === 'ArrowLeft') {
+    $('btn-back').click();
+  }
+});
+
+// ==================== SCORING ====================
+function calculateScores() {
+  const dimScores = [];
+  for (let d = 0; d < 5; d++) {
+    const dimQuestions = QUESTIONS.map((q, i) => ({ ...q, index: i })).filter(q => q.dim === d);
+    const sum = dimQuestions.reduce((acc, q) => acc + (state.answers[q.index] || 0), 0);
+    dimScores.push(Math.round((sum / dimQuestions.length) * 10) / 10);
+  }
+  state.scores = dimScores;
+  state.gesamtScore = Math.round((dimScores.reduce((a, b) => a + b, 0) / dimScores.length) * 10) / 10;
+
+  for (const r of REIFEGRAD) {
+    if (state.gesamtScore >= r.min && state.gesamtScore <= r.max) {
+      state.reifegrad = r;
+      break;
+    }
+  }
+  if (!state.reifegrad) state.reifegrad = REIFEGRAD[0];
+}
+
+// ==================== RESULTS ====================
+function calculateAndShowResults() {
+  calculateScores();
+  showScreen('screen-results');
+  renderResults();
+  generateFeedback();
+}
+
+function renderResults() {
+  // Greeting
+  $('results-greeting').textContent = `Hey ${state.name}!`;
+
+  // Score with count-up animation
+  animateScore($('score-value'), state.gesamtScore, 1200);
+
+  // Reifegrad label
+  const labelEl = $('score-label');
+  labelEl.textContent = state.reifegrad.label;
+  labelEl.className = 'score-label ' + state.reifegrad.css;
+
+  // Description
+  $('reifegrad-desc').textContent = state.reifegrad.desc;
+
+  // Dimension details
+  const detailsHtml = state.scores.map((score, i) => `
+    <div class="dimension-detail">
+      <span class="dim-name">${DIM_SHORT[i]}</span>
+      <div class="dim-bar-track">
+        <div class="dim-bar-fill" style="width: 0%" data-target="${(score / 5) * 100}"></div>
+      </div>
+      <span class="dim-score">${score.toFixed(1)}</span>
+    </div>
+  `).join('');
+  $('dimension-details').innerHTML = detailsHtml;
+
+  // Animate bars after a short delay
+  setTimeout(() => {
+    document.querySelectorAll('.dim-bar-fill').forEach(bar => {
+      bar.style.width = bar.dataset.target + '%';
+    });
+  }, 300);
+
+  // Render radar chart
+  renderRadarChart();
+
+  // Re-trigger stagger animations (needed for "Nochmal machen")
+  document.querySelectorAll('.results-body .results-card').forEach(card => {
+    card.style.animation = 'none';
+    card.offsetHeight; // force reflow
+    card.style.animation = '';
+  });
+}
+
+function animateScore(el, target, duration) {
+  const start = performance.now();
+  function update(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = eased * target;
+    el.textContent = current.toFixed(1);
+    if (progress < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+
+// ==================== RADAR CHART ====================
+function renderRadarChart() {
+  if (state.radarChart) state.radarChart.destroy();
+
+  const ctx = $('radar-chart').getContext('2d');
+  state.radarChart = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: DIM_SHORT,
+      datasets: [
+        {
+          label: 'Dein Ergebnis',
+          data: state.scores,
+          backgroundColor: 'rgba(27, 58, 92, 0.15)',
+          borderColor: '#1B3A5C',
+          borderWidth: 2.5,
+          pointBackgroundColor: '#C0392B',
+          pointBorderColor: '#C0392B',
+          pointRadius: 5,
+          pointHoverRadius: 7
+        },
+        {
+          label: 'KAEFER Baseline (Feb 2026)',
+          data: KAEFER_BASELINE,
+          backgroundColor: 'rgba(192, 57, 43, 0.06)',
+          borderColor: 'rgba(192, 57, 43, 0.35)',
+          borderWidth: 1.5,
+          borderDash: [5, 5],
+          pointBackgroundColor: 'rgba(192, 57, 43, 0.4)',
+          pointBorderColor: 'rgba(192, 57, 43, 0.4)',
+          pointRadius: 3,
+          pointHoverRadius: 5
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      scales: {
+        r: {
+          min: 0,
+          max: 5,
+          ticks: {
+            stepSize: 1,
+            font: { size: 10 },
+            color: '#999',
+            backdropColor: 'transparent'
+          },
+          grid: {
+            color: 'rgba(0, 0, 0, 0.06)'
+          },
+          angleLines: {
+            color: 'rgba(0, 0, 0, 0.08)'
+          },
+          pointLabels: {
+            font: { size: 12, weight: '600' },
+            color: '#1B3A5C'
+          }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1B3A5C',
+          titleFont: { size: 13 },
+          bodyFont: { size: 12 },
+          padding: 10,
+          cornerRadius: 8
+        }
+      },
+      animation: {
+        duration: 1000,
+        easing: 'easeOutQuart'
+      }
+    }
+  });
+}
+
+// ==================== AI FEEDBACK ====================
+async function generateFeedback() {
+  $('feedback-loading').style.display = 'flex';
+  $('feedback-text').style.display = 'none';
+
+  // Try API first, fallback to local
+  if (ANTHROPIC_API_KEY) {
+    try {
+      const feedback = await fetchApiFeedback();
+      showFeedback(feedback);
+      return;
+    } catch (e) {
+      console.warn('API-Feedback fehlgeschlagen, nutze lokalen Fallback:', e);
+    }
+  }
+
+  // Local fallback (with slight delay for natural feel)
+  setTimeout(() => {
+    const feedback = generateLocalFeedback();
+    showFeedback(feedback);
+  }, 1500);
+}
+
+async function fetchApiFeedback() {
+  const prompt = `Du bist KI-Coach bei KAEFER, einem deutschen Industrieunternehmen (Isolierung, Brandschutz, Oberflächenschutz). Ein Mitarbeitender hat gerade das KI-Reifegrad-Assessment gemacht. Hier die Ergebnisse:
+
+Name: ${state.name}
+Abteilung: ${state.dept}
+Reifegrad: ${state.reifegrad.label} (${state.gesamtScore}/5.0)
+
+Dimensionen:
+- KI-Verständnis & Orientierung: ${state.scores[0]}/5
+- Anwendung im Arbeitsalltag: ${state.scores[1]}/5
+- Prompt-Kompetenz & AI Chat: ${state.scores[2]}/5
+- Spielregeln & Datenbewusstsein: ${state.scores[3]}/5
+- Veränderung & Weitergabe: ${state.scores[4]}/5
+
+Kontext: KAEFER nutzt den eigenen "KAEFER AI Chat" (aichat.kaefer.com) mit Modellen wie GPT-5 und Claude Sonnet 4.5. Wichtige Features: Instructions (eigene Regeln), Presets (Prompt-Vorlagen), Silos (Abteilungswissen), Prompt-Verbesserer. Es gibt 5 KI-Spielregeln und ein Ampel-Modell (Grün/Gelb/Rot) für Freigaben.
+
+Gib eine kurze, persönliche Einschätzung (3-4 Sätze). Benenne die stärkste und schwächste Dimension. Empfiehl einen konkreten ersten Schritt im KAEFER AI Chat — z.B. eine bestimmte Funktion ausprobieren, ein Silo anlegen, den Prompt-Verbesserer nutzen, oder ein Preset erstellen. Formuliere warmherzig und motivierend, auf Deutsch, Du-Form. Kein Berater-Sprech. Sprich die Person mit Namen an.`;
+
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': ANTHROPIC_API_KEY,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 500,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+
+  if (!response.ok) throw new Error(`API Error: ${response.status}`);
+
+  const data = await response.json();
+  return data.content[0].text;
+}
+
+function generateLocalFeedback() {
+  const name = state.name;
+  const scores = state.scores;
+  const label = state.reifegrad.label;
+
+  // Find strongest and weakest
+  let strongest = 0, weakest = 0;
+  for (let i = 1; i < 5; i++) {
+    if (scores[i] > scores[strongest]) strongest = i;
+    if (scores[i] < scores[weakest]) weakest = i;
+  }
+
+  const openings = {
+    'KI-Einsteiger': `Hey ${name}! Du startest gerade deine KI-Reise — und allein dass du dieses Assessment gemacht hast, zeigt: Du bist offen für Neues, und das ist die wichtigste Voraussetzung.`,
+    'KI-Entdecker': `Hey ${name}! Du hast bereits erste Schritte mit KI gemacht und ein gutes Grundverständnis aufgebaut — das ist eine prima Basis, auf der du jetzt aufbauen kannst.`,
+    'KI-Anwender': `Hey ${name}! Du nutzt KI schon aktiv in deinem Arbeitsalltag und hast ein solides Verständnis — das ist wirklich stark und zeigt, dass du die Möglichkeiten erkannt hast.`,
+    'KI-Vorreiter': `Hey ${name}! Du gehörst zu den KI-Vorreitern bei KAEFER — dein Wissen und deine Erfahrung sind enorm wertvoll für das gesamte Team!`
+  };
+
+  const strengths = [
+    'beim Thema KI-Verständnis',
+    'bei der praktischen Anwendung im Arbeitsalltag',
+    'beim Thema Prompting',
+    'beim Thema Spielregeln und Datenbewusstsein',
+    'bei Veränderung und Weitergabe'
+  ];
+
+  const weaknesses = [
+    'beim KI-Grundverständnis',
+    'bei der regelmäßigen Anwendung',
+    'bei der Prompt-Kompetenz',
+    'beim Thema Spielregeln',
+    'beim Thema Veränderung'
+  ];
+
+  const recommendations = [
+    'Schau dir als Nächstes an, was der KAEFER AI Chat alles kann — öffne einfach mal aichat.kaefer.com und probiere eine einfache Aufgabe aus, z.\u202FB. eine E-Mail formulieren.',
+    'Probier den AI Chat mal für eine echte Arbeitsaufgabe aus, die dir regelmäßig begegnet — zum Beispiel eine Zusammenfassung schreiben oder eine Checkliste erstellen. Du wirst merken: Es lohnt sich!',
+    'Teste den Prompt-Verbesserer im AI Chat (du findest ihn unter „Dein Support" in der Seitenleiste) — er zeigt dir sofort, wie du mit besseren Prompts bessere Ergebnisse bekommst.',
+    'Mach dich mit den 5 KI-Spielregeln bei KAEFER vertraut — sie geben dir Sicherheit im Umgang mit KI und helfen dir, die Tools verantwortungsvoll zu nutzen.',
+    'Teile dein Wissen! Speichere einen guten Prompt als Preset im AI Chat, damit auch deine Kolleg:innen davon profitieren können.'
+  ];
+
+  let feedback = openings[label] || openings['KI-Einsteiger'];
+  feedback += ` Besonders stark bist du ${strengths[strongest]}`;
+
+  if (strongest !== weakest) {
+    feedback += ` — ${weaknesses[weakest]} gibt es noch Potenzial, aber genau dafür ist das Programm da.`;
+  } else {
+    feedback += '.';
+  }
+
+  feedback += ' ' + recommendations[weakest];
+
+  return feedback;
+}
+
+function showFeedback(text) {
+  state.feedback = text;
+  $('feedback-loading').style.display = 'none';
+  const feedbackEl = $('feedback-text');
+  feedbackEl.textContent = text;
+  feedbackEl.style.display = 'block';
+  feedbackEl.style.opacity = '0';
+  requestAnimationFrame(() => {
+    feedbackEl.style.transition = 'opacity 0.5s ease';
+    feedbackEl.style.opacity = '1';
+  });
+}
+
+// ==================== PDF EXPORT ====================
+$('btn-pdf').addEventListener('click', () => {
+  generatePDF();
+});
+
+function generatePDF() {
+  const date = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+  // Get chart as image
+  let chartImgSrc = '';
+  if (state.radarChart) {
+    chartImgSrc = state.radarChart.toBase64Image();
+  }
+
+  // Build PDF HTML
+  const labelClass = state.reifegrad.css;
+  const labelColors = {
+    einsteiger: 'background:#FFF3E0;color:#E65100;',
+    entdecker: 'background:#E3F2FD;color:#1565C0;',
+    anwender: 'background:#E8F5E9;color:#2E7D32;',
+    vorreiter: 'background:#F3E5F5;color:#7B1FA2;'
+  };
+
+  const template = $('pdf-template');
+  template.innerHTML = `
+    <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#444;background:#fff;">
+      <div style="background:#1B3A5C;color:#fff;padding:28px 32px;display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-size:1.3rem;font-weight:700;margin-bottom:4px;">KI-Reifegrad-Assessment</div>
+          <div style="font-size:0.85rem;opacity:0.85;">KAEFER KI-Programm 2026</div>
+        </div>
+        <div style="text-align:right;font-size:0.8rem;opacity:0.85;">
+          <div>${state.name}</div>
+          <div>${state.dept}</div>
+          <div>${date}</div>
+        </div>
+      </div>
+      <div style="padding:28px 32px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;padding-bottom:20px;border-bottom:2px solid #f2f2f2;">
+          <div>
+            <div style="font-size:2.2rem;font-weight:700;color:#1B3A5C;">${state.gesamtScore.toFixed(1)} / 5.0</div>
+            <div style="font-size:0.85rem;color:#777;margin-top:4px;">KAEFER Baseline: 2.1 / 5.0</div>
+          </div>
+          <div style="padding:8px 20px;border-radius:20px;font-weight:700;font-size:1rem;${labelColors[labelClass] || ''}">${state.reifegrad.label}</div>
+        </div>
+        ${chartImgSrc ? `<img src="${chartImgSrc}" style="display:block;margin:0 auto 24px auto;max-width:340px;width:100%;">` : ''}
+        <div style="margin-bottom:24px;">
+          ${state.scores.map((s, i) => `
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f2f2f2;font-size:0.9rem;">
+              <span style="font-weight:600;color:#1B3A5C;">${DIMENSIONS[i]}</span>
+              <span style="font-weight:700;color:#1B3A5C;">${s.toFixed(1)} / 5.0</span>
+            </div>
+          `).join('')}
+        </div>
+        <div style="font-size:0.9rem;line-height:1.6;color:#444;margin-bottom:20px;">
+          ${state.reifegrad.desc}
+        </div>
+        ${state.feedback ? `
+          <div style="background:#f2f2f2;border-left:4px solid #2E7D32;padding:16px 20px;border-radius:0 8px 8px 0;margin-bottom:20px;">
+            <div style="font-weight:700;font-size:0.85rem;color:#1B3A5C;margin-bottom:8px;">Dein KI-Coach sagt:</div>
+            <div style="font-size:0.88rem;line-height:1.6;color:#444;">${state.feedback}</div>
+          </div>
+        ` : ''}
+      </div>
+      <div style="text-align:center;font-size:0.72rem;color:#999;padding:14px 32px;border-top:1px solid #f2f2f2;">
+        KAEFER KI-Programm 2026 | Erstellt mit dem KI-Reifegrad-Assessment
+      </div>
+    </div>
+  `;
+
+  const opt = {
+    margin: [8, 8, 8, 8],
+    filename: `KI-Assessment_${state.name.replace(/\s+/g, '_')}_${date.replace(/\./g, '-')}.pdf`,
+    image: { type: 'jpeg', quality: 0.95 },
+    html2canvas: { scale: 2, useCORS: true, logging: false },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+
+  html2pdf().set(opt).from(template).save().then(() => {
+    template.innerHTML = '';
+  }).catch(err => {
+    console.error('PDF-Fehler:', err);
+    alert('Der PDF-Export hat leider nicht funktioniert. Tipp: Mache einen Screenshot deines Ergebnisses!');
+  });
+}
+
+// ==================== EMAIL ====================
+$('btn-email').addEventListener('click', () => {
+  const date = new Date().toLocaleDateString('de-DE');
+  const subject = encodeURIComponent(`KI-Assessment: ${state.name} — ${state.dept} — ${state.reifegrad.label}`);
+  const body = encodeURIComponent(
+    `Hallo Nina,\n\nhier mein KI-Assessment-Ergebnis:\n\n` +
+    `Name: ${state.name}\n` +
+    `Abteilung: ${state.dept}\n` +
+    `Datum: ${date}\n\n` +
+    `Gesamt-Score: ${state.gesamtScore.toFixed(1)} / 5.0\n` +
+    `Reifegrad: ${state.reifegrad.label}\n\n` +
+    `Dimensionen:\n` +
+    state.scores.map((s, i) => `- ${DIMENSIONS[i]}: ${s.toFixed(1)} / 5.0`).join('\n') +
+    `\n\n` +
+    (state.feedback ? `KI-Feedback:\n${state.feedback}\n\n` : '') +
+    `Viele Grüße\n${state.name}`
+  );
+
+  window.location.href = `mailto:Nina.Lindner.External@kaefer.com?subject=${subject}&body=${body}`;
+});
+
+// ==================== RETRY ====================
+$('btn-retry').addEventListener('click', () => {
+  state.answers.fill(null);
+  state.currentQuestion = 0;
+  state.scores = [];
+  state.gesamtScore = 0;
+  state.reifegrad = null;
+  state.feedback = '';
+  if (state.radarChart) {
+    state.radarChart.destroy();
+    state.radarChart = null;
+  }
+  showScreen('screen-start');
+  inputName.value = state.name;
+  inputDept.value = state.dept !== 'Nicht angegeben' ? state.dept : '';
+  validateStart();
+});
+</script>
+</body>
+</html>
