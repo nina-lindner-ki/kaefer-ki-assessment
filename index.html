@@ -1029,12 +1029,12 @@ const QUESTIONS = [
     'Ja — ein KI-Tool, mit dem man Texte, Analysen und mehr erstellen kann',
     'Ja klar — inklusive warum KAEFER einen eigenen AI Chat nutzt'
   ]},
-  { dim: 0, text: 'Weißt du, warum KI manchmal überzeugend klingt, aber trotzdem falsch liegt — sogenannte „Halluzinationen"?', answers: [
-    'Nein, davon höre ich zum ersten Mal',
-    'Den Begriff habe ich gehört, verstehe ihn aber nicht richtig',
-    'Ungefähr — KI erfindet manchmal Sachen',
-    'Ja, ich verstehe das und weiß, dass man Ergebnisse prüfen muss',
-    'Ja, ich kann erklären, warum das passiert und wie man damit umgeht'
+  { dim: 0, text: 'Der AI Chat schreibt dir einen perfekt klingenden Angebotstext mit konkreten Zahlen. Was machst du als Nächstes?', answers: [
+    'Super — den schicke ich direkt so an den Kunden',
+    'Ich lese ihn kurz durch, klingt gut — ab damit',
+    'Ich passe Tonfall und Formatierung an, inhaltlich wird das schon passen',
+    'Ich prüfe alle Zahlen und Fakten gegen meine Quellen, bevor ich ihn verwende',
+    'Ich prüfe alles inhaltlich — KI kann überzeugend klingen und trotzdem falsch liegen'
   ]},
   { dim: 0, text: 'Stell dir vor, du sollst eine wichtige Entscheidung treffen. Wie würdest du KI dabei einsetzen?', answers: [
     'Ich würde der KI die Entscheidung komplett überlassen — die weiß mehr als ich',
@@ -1058,12 +1058,12 @@ const QUESTIONS = [
     'Ja, mehrere Ergebnisse, die ich direkt nutzen konnte',
     'Ja, regelmäßig — E-Mails, Zusammenfassungen, Checklisten und mehr'
   ]},
-  { dim: 1, text: 'Nutzt du Funktionen im AI Chat über das reine Chatten hinaus — z.\u202FB. Instructions, Presets oder Silos?', answers: [
-    'Nein, diese Funktionen kenne ich nicht',
-    'Davon gehört, aber noch nichts ausprobiert',
-    'Ich habe eine der Funktionen mal angeschaut',
-    'Ja, ich nutze z.\u202FB. Instructions oder Presets gelegentlich',
-    'Ja, ich nutze mehrere dieser Funktionen aktiv'
+  { dim: 1, text: 'Du willst, dass der AI Chat bei jedem Gespräch automatisch auf Deutsch antwortet und sich auf dein Fachgebiet fokussiert. Wie löst du das?', answers: [
+    'Keine Ahnung — geht das überhaupt?',
+    'Ich würde es jedes Mal neu in den Chat tippen',
+    'Ich würde irgendwo in den Einstellungen schauen',
+    'Ich würde eine Instruction anlegen, die das für jeden Chat automatisch regelt',
+    'Instruction für die Grundregeln plus ein Preset für wiederkehrende Aufgaben'
   ]},
   // Dimension 3: Prompt-Kompetenz & AI Chat
   { dim: 2, text: 'Wenn der AI Chat ein schlechtes Ergebnis liefert — versuchst du den Prompt zu verbessern, oder gibst du eher auf?', answers: [
@@ -1073,27 +1073,27 @@ const QUESTIONS = [
     'Ja, ich versuche gezielt, den Prompt zu verbessern',
     'Ja, ich arbeite systematisch am Prompt, bis das Ergebnis passt'
   ]},
-  { dim: 2, text: 'Nutzt du Techniken wie: der KI eine Rolle geben, Kontext mitliefern, Beispiele zeigen oder das Ergebnis schrittweise eingrenzen?', answers: [
-    'Nein, diese Techniken kenne ich nicht',
-    'Davon gehört, aber ich nutze sie nicht bewusst',
-    'Manchmal gebe ich mehr Kontext, aber eher intuitiv',
-    'Ja, ich nutze einige dieser Techniken bewusst',
-    'Ja, regelmäßig — Rolle, Kontext und Beispiele gehören bei mir dazu'
+  { dim: 2, text: 'Du brauchst eine professionelle Projektbeschreibung für einen Kunden. Wie würdest du den AI Chat dafür nutzen?', answers: [
+    'Ich würde schreiben: „Schreib mir eine Projektbeschreibung"',
+    'Ich würde das Projekt kurz erwähnen, z.\u202FB. „Schreib was über unser KAEFER-Projekt"',
+    'Ich würde ein paar Details zum Projekt mitgeben und sagen, was ich brauche',
+    'Ich gebe Rolle, Kontext, Zielgruppe und ein Beispiel für den gewünschten Stil',
+    'Rolle, Kontext, Beispiel, Formatvorgabe — und ich verfeinere schrittweise im Dialog'
   ]},
-  { dim: 2, text: 'Kennst du den Prompt-Verbesserer im AI Chat? (Er analysiert deinen Prompt und schlägt eine bessere Version vor — unter „Dein Support" in der Seitenleiste.)', answers: [
-    'Nein, davon höre ich zum ersten Mal',
-    'Gehört, aber noch nicht geschaut',
-    'Ich weiß, wo er ist, habe ihn aber noch nicht genutzt',
-    'Ja, ich habe ihn schon ausprobiert',
-    'Ja, ich nutze ihn regelmäßig für bessere Prompts'
+  { dim: 2, text: 'Du hast einen Prompt geschrieben, aber das Ergebnis überzeugt dich nicht. Was probierst du als Nächstes?', answers: [
+    'Ich gebe auf — der AI Chat kann das wohl nicht',
+    'Ich stelle die gleiche Frage nochmal und hoffe auf ein besseres Ergebnis',
+    'Ich formuliere den Prompt um und versuche, mehr Details mitzugeben',
+    'Ich nutze den Prompt-Verbesserer in der Seitenleiste, um meinen Prompt zu optimieren',
+    'Prompt-Verbesserer nutzen, Kontext ergänzen und schrittweise im Dialog verfeinern'
   ]},
   // Dimension 4: Spielregeln & Datenbewusstsein
-  { dim: 3, text: 'Weißt du, warum KAEFER den eigenen AI Chat nutzt statt öffentlicher Tools wie ChatGPT? (Stichwort: Datenschutz, kein Datenabfluss)', answers: [
-    'Nein, das ist mir nicht klar',
-    'Ich vermute, es hat mit Datenschutz zu tun',
-    'Grob — Daten bleiben intern und fließen nicht nach außen',
-    'Ja: Datenschutz, Kundendaten erlaubt, kein Datenabfluss',
-    'Ja klar — ich könnte das auch Kolleg:innen erklären'
+  { dim: 3, text: 'Ein Kollege will schnell eine Antwort und tippt seine Frage in ChatGPT — inklusive Kundennamen und Projektdetails. Was sagst du?', answers: [
+    'Kein Problem — ChatGPT nutzt doch jeder',
+    'Hmm, ist das erlaubt? Ich bin mir nicht sicher',
+    'Das sollte er lieber lassen, aber ich weiß nicht genau warum',
+    'Stopp — Kundendaten gehören nicht in öffentliche Tools. Nimm den KAEFER AI Chat',
+    'Stopp — bei öffentlichen Tools fließen Daten ab. Im KAEFER AI Chat bleiben sie intern und geschützt'
   ]},
   { dim: 3, text: 'Wenn du ein KI-Ergebnis bekommst — z.\u202FB. einen Angebotstext oder eine Analyse — prüfst du es, bevor du es weitergibst?', answers: [
     'Nein, ich übernehme das Ergebnis meistens direkt',
@@ -1102,12 +1102,12 @@ const QUESTIONS = [
     'Ja, ich prüfe die meisten Ergebnisse auf Richtigkeit',
     'Ja, immer — KI-Ergebnisse können Fehler enthalten'
   ]},
-  { dim: 3, text: 'Kennst du die fünf KI-Spielregeln bei KAEFER? (Nur freigegebene Tools, kein Profiling, Ergebnisse prüfen, Kontext ist König, Fehler sind erwünscht)', answers: [
-    'Nein, ich wusste nicht, dass es Spielregeln gibt',
-    'Gehört, dass es Regeln gibt — kenne sie aber nicht',
-    'Ich kenne ein oder zwei davon',
-    'Ja, die meisten sind mir bekannt',
-    'Ja, alle fünf — und ich halte mich daran'
+  { dim: 3, text: 'Du bekommst vom AI Chat eine fertige Analyse mit Zahlen und Empfehlungen und willst sie an den Kunden schicken. Was machst du vorher?', answers: [
+    'Nichts weiter — die KI hat das ja geschrieben, das wird passen',
+    'Ich formatiere es hübsch und schicke es raus',
+    'Ich lese es durch und schaue, ob es plausibel klingt',
+    'Ich prüfe alle Zahlen und Fakten gegen die Originalquellen',
+    'Fakten prüfen, Quellen gegenchecken und sicherstellen, dass keine sensiblen Daten enthalten sind'
   ]},
   // Dimension 5: Veränderung & Weitergabe
   { dim: 4, text: 'Siehst du in deinem Arbeitsalltag konkrete Aufgaben, bei denen der AI Chat dir Zeit sparen könnte?', answers: [
