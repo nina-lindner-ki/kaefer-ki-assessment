@@ -865,8 +865,8 @@ body {
         <p class="subline">Dein persönlicher KI-Reifegrad in 3 Minuten.<br>Keine Anmeldung, kein Test — nur eine ehrliche Standortbestimmung.</p>
 
         <div class="form-group">
-          <label for="input-name">Vorname</label>
-          <input type="text" id="input-name" placeholder="Dein Vorname" autocomplete="given-name">
+          <label for="input-name">Spitzname</label>
+          <input type="text" id="input-name" placeholder="Wie sollen wir dich nennen?" autocomplete="off">
         </div>
         <div class="form-group">
           <label for="input-dept">Abteilung</label>
@@ -894,7 +894,7 @@ body {
         <button class="btn-primary" id="btn-start" disabled>Los geht's</button>
         <div class="disclaimer">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px;opacity:0.6"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          <strong>Datenschutz:</strong> Dieses Tool läuft komplett in deinem Browser. Deine Antworten werden nirgendwo gespeichert und nicht an Server übertragen. Wenn du dein Ergebnis teilen möchtest, kannst du es als PDF exportieren oder per E-Mail an Nina weiterleiten — aber nur, wenn du das aktiv möchtest.
+          <strong>Datenschutz:</strong> Dieses Assessment läuft komplett in deinem Browser — es werden keine personenbezogenen Daten gespeichert oder an Server übertragen. Wir fragen bewusst nur einen Spitznamen und deine Abteilung. Dein Ergebnis siehst nur du. Wenn du es teilen möchtest, kannst du es als PDF exportieren oder per E-Mail an Nina senden — aber nur, wenn du das aktiv möchtest.
         </div>
       </div>
     </div>
@@ -1460,7 +1460,9 @@ async function generateFeedback() {
   // Try API first, fallback to local
   if (ANTHROPIC_API_KEY) {
     try {
-      const feedback = await fetchApiFeedback();
+      let feedback = await fetchApiFeedback();
+      // Name wird erst LOKAL eingefügt, war nie bei der API
+      feedback = `${state.name}, ${feedback.charAt(0).toLowerCase()}${feedback.slice(1)}`;
       showFeedback(feedback);
       return;
     } catch (e) {
@@ -1476,22 +1478,49 @@ async function generateFeedback() {
 }
 
 async function fetchApiFeedback() {
-  const prompt = `Du bist KI-Coach bei KAEFER, einem deutschen Industrieunternehmen (Isolierung, Brandschutz, Oberflächenschutz). Ein Mitarbeitender hat gerade das KI-Reifegrad-Assessment gemacht. Hier die Ergebnisse:
+  // DATENSCHUTZ: Name und Abteilung werden NICHT an die API gesendet.
+  // Nur anonymisierte Scores gehen an Anthropic. Der Name wird erst
+  // lokal im Browser in die Antwort eingefügt.
+  const prompt = `Du bist der KI-Coach im KI-Botschafter-Programm bei KAEFER, einem deutschen Industrieunternehmen (Isolierung, Brandschutz, Oberflächenschutz) mit ca. 30.000 Mitarbeitenden. Du sprichst mit einem/einer von ca. 50 KI-BotschafterInnen, die als Multiplikatoren KI in ihre Abteilungen tragen sollen.
 
-Name: ${state.name}
-Abteilung: ${state.dept}
-Reifegrad: ${state.reifegrad.label} (${state.gesamtScore}/5.0)
+Ein:e Mitarbeitende:r hat gerade das KI-Reifegrad-Assessment abgeschlossen. Hier die anonymisierten Ergebnisse:
 
-Dimensionen:
-- KI-Verständnis & Orientierung: ${state.scores[0]}/5
-- Anwendung im Arbeitsalltag: ${state.scores[1]}/5
-- Prompt-Kompetenz & AI Chat: ${state.scores[2]}/5
-- Spielregeln & Datenbewusstsein: ${state.scores[3]}/5
-- Veränderung & Weitergabe: ${state.scores[4]}/5
+Reifegrad: ${state.reifegrad.label} (Gesamt: ${state.gesamtScore.toFixed(1)} von 5.0)
 
-Kontext: KAEFER nutzt den eigenen "KAEFER AI Chat" (aichat.kaefer.com) mit Modellen wie GPT-5 und Claude Sonnet 4.5. Wichtige Features: Instructions (eigene Regeln), Presets (Prompt-Vorlagen), Silos (Abteilungswissen), Prompt-Verbesserer. Es gibt 5 KI-Spielregeln und ein Ampel-Modell (Grün/Gelb/Rot) für Freigaben.
+Die 5 Dimensionen im Detail:
+1. KI-Verständnis & Orientierung: ${state.scores[0].toFixed(1)}/5 — Weiß die Person, was KI kann, was nicht, und was der KAEFER AI Chat ist?
+2. Anwendung im Arbeitsalltag: ${state.scores[1].toFixed(1)}/5 — Nutzt die Person KI aktiv für echte Arbeitsaufgaben?
+3. Prompt-Kompetenz & AI Chat: ${state.scores[2].toFixed(1)}/5 — Kann die Person gute Prompts schreiben und kennt die AI-Chat-Features?
+4. Spielregeln & Datenbewusstsein: ${state.scores[3].toFixed(1)}/5 — Kennt die Person die 5 KI-Spielregeln und das Ampel-Modell?
+5. Veränderung & Weitergabe: ${state.scores[4].toFixed(1)}/5 — Kann die Person andere begeistern und Use Cases identifizieren?
 
-Gib eine kurze, persönliche Einschätzung (3-4 Sätze). Benenne die stärkste und schwächste Dimension. Empfiehl einen konkreten ersten Schritt im KAEFER AI Chat — z.B. eine bestimmte Funktion ausprobieren, ein Silo anlegen, den Prompt-Verbesserer nutzen, oder ein Preset erstellen. Formuliere warmherzig und motivierend, auf Deutsch, Du-Form. Kein Berater-Sprech. Sprich die Person mit Namen an.`;
+Kontext zum KAEFER AI Chat (aichat.kaefer.com):
+- Modelle: GPT-4.1, Claude Sonnet 4, Gemini 2.5 Pro
+- Key-Features: Instructions (eigene Systemregeln pro Chat), Presets (wiederverwendbare Prompt-Vorlagen), Silos (geteiltes Abteilungswissen als Wissensdatenbank), Prompt-Verbesserer (optimiert Prompts automatisch)
+- 5 KI-Spielregeln: (1) Nur freigegebene Tools nutzen, (2) Kein Profiling/keine personenbezogenen Daten, (3) Ergebnisse immer prüfen, (4) Kontext ist König, (5) Fehler sind erwünscht
+- Ampel-Modell: Grün = frei nutzbar, Gelb = mit Vorsicht, Rot = verboten
+
+Deine Aufgabe — schreibe ein Feedback mit genau dieser Struktur:
+
+**Absatz 1 – Standortbestimmung (2-3 Sätze):**
+Ordne das Ergebnis ehrlich ein. Nicht beschönigen, aber motivierend. Wo steht die Person im Vergleich zum KAEFER-Durchschnitt? (Durchschnitt liegt bei ca. 2.1/5 — die meisten sind noch Einsteiger/Entdecker.)
+
+**Absatz 2 – Stärke feiern (2 Sätze):**
+Benenne die stärkste Dimension konkret und erkläre, warum das wertvoll ist — besonders in der Rolle als KI-Botschafter:in.
+
+**Absatz 3 – Schwäche als Chance (2-3 Sätze):**
+Benenne die schwächste Dimension ehrlich. Erkläre konkret, was die Person dadurch verpasst und welchen Mehrwert sie freischalten könnte. Kein Weichspüler.
+
+**Absatz 4 – Konkreter Aktionsplan (3-4 Sätze):**
+Gib genau EINEN konkreten ersten Schritt im KAEFER AI Chat. Nicht vage ("probier mal aus"), sondern spezifisch: welches Feature, für welche Aufgabe, mit welchem Ergebnis. Beispiele:
+- "Öffne den AI Chat, erstelle eine neue Instruction mit der Regel: 'Du bist Experte für [Fachgebiet]. Antworte immer auf Deutsch und beziehe dich auf industrielle Anwendungen.' Das personalisiert alle deine zukünftigen Chats."
+- "Erstelle ein Preset 'E-Mail-Zusammenfassung' mit dem Prompt: 'Fasse die folgende E-Mail in 3 Bullet Points zusammen: [E-Mail einfügen]'. Das sparst du dir ab jetzt bei jeder langen Mail."
+- "Lege ein Silo für deine Abteilung an und lade ein wichtiges Dokument hoch — z.B. eine Prozessbeschreibung. Dann können alle im Team den AI Chat zu diesem Dokument befragen."
+
+Tonalität: Warmherzig aber direkt. Du-Form. Wie ein erfahrener Kollege, der es gut meint. Kein Consulting-Deutsch, keine Floskeln wie "Das ist ein toller Anfang!". Lieber ehrlich und konkret.
+Sprache: Deutsch.
+Länge: Ca. 150-200 Wörter.
+WICHTIG: Beginne NICHT mit dem Namen der Person — der wird lokal eingefügt. Beginne direkt mit der Einschätzung.`;
 
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
