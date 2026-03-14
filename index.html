@@ -588,6 +588,31 @@ body {
   box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
 }
 
+/* Zeitprofil */
+.zeit-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.zeit-hinweis {
+  font-size: 0.72rem;
+  color: #999;
+  font-weight: 400;
+}
+.zeit-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 0.85rem;
+}
+.zeit-item:last-child { border-bottom: none; }
+.zeit-label { color: #555; }
+.zeit-value { font-weight: 700; color: var(--navy); }
+
 /* Feedback section */
 .feedback-card {
   border-left: 4px solid var(--green);
@@ -816,6 +841,8 @@ body {
 .stagger-3 { animation-delay: 0.3s; opacity: 0; }
 .stagger-4 { animation-delay: 0.4s; opacity: 0; }
 .stagger-5 { animation-delay: 0.5s; opacity: 0; }
+.stagger-6 { animation-delay: 0.6s; opacity: 0; }
+.stagger-7 { animation-delay: 0.7s; opacity: 0; }
 
 /* ==================== RESPONSIVE ==================== */
 @media (max-width: 480px) {
@@ -898,7 +925,7 @@ body {
       <div class="start-card">
         <div class="start-badge">KAEFER KI-Programm 2026</div>
         <h1>Wo stehst du mit KI?</h1>
-        <p class="subline">Dein persönlicher KI-Reifegrad in 3 Minuten.<br>Keine Anmeldung, kein Test — nur eine ehrliche Standortbestimmung.</p>
+        <p class="subline">Wir sind hier, um dich zu unterstützen — und dieses Assessment hilft uns dabei.<br>Kein Test, keine Noten — nur eine ehrliche Standortbestimmung, damit wir gemeinsam deinen Fortschritt sichtbar machen und feiern können.</p>
 
         <div class="form-group">
           <label for="input-name">Spitzname</label>
@@ -969,7 +996,7 @@ body {
   <div id="screen-results" class="screen">
     <div class="results-header-bar">
       <h1 id="results-greeting">Hey!</h1>
-      <p class="subtitle">Dein KI-Reifegrad</p>
+      <p class="subtitle">Hier ist dein persönlicher KI-Reifegrad — darauf kannst du aufbauen!</p>
     </div>
 
     <div class="results-body">
@@ -997,8 +1024,18 @@ body {
       <!-- Dimension Details -->
       <div class="results-card fade-in-up stagger-3" id="dimension-details"></div>
 
+      <!-- Zeitprofil (nicht bewertet) -->
+      <div class="results-card fade-in-up stagger-4" id="zeit-profil" style="display:none">
+        <div class="zeit-header">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <strong>Dein Zeitprofil</strong>
+          <span class="zeit-hinweis">wird nicht bewertet — nur zur Standortbestimmung</span>
+        </div>
+        <div id="zeit-details"></div>
+      </div>
+
       <!-- AI Feedback -->
-      <div class="results-card feedback-card fade-in-up stagger-4">
+      <div class="results-card feedback-card fade-in-up stagger-5">
         <div class="feedback-title">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"/><line x1="9" y1="21" x2="15" y2="21"/></svg>
           Dein KI-Coach sagt:
@@ -1013,7 +1050,7 @@ body {
       </div>
 
       <!-- CTA -->
-      <div class="results-card fade-in-up stagger-5" style="text-align:center;">
+      <div class="results-card fade-in-up stagger-6" style="text-align:center;">
         <a href="https://aichat.kaefer.com" target="_blank" rel="noopener" class="btn-cta">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           Jetzt den AI Chat ausprobieren
@@ -1021,7 +1058,7 @@ body {
       </div>
 
       <!-- Actions -->
-      <div class="results-card fade-in-up stagger-6">
+      <div class="results-card fade-in-up stagger-7">
         <div class="action-buttons">
           <button class="btn-action pdf" id="btn-pdf">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
@@ -1104,7 +1141,7 @@ const QUESTIONS = [
     'Regelmäßig, mehrmals pro Woche',
     'Fast täglich — der AI Chat gehört zu meinem Arbeitsalltag'
   ]},
-  { dim: 1, text: 'Wie viel Zeit nimmst du dir pro Woche, um den Umgang mit KI zu lernen — ob Tutorials, Ausprobieren oder Austausch mit Kolleg:innen?', answers: [
+  { dim: -1, meta: 'zeitinvest', text: 'Wie viel Zeit nimmst du dir pro Woche, um den Umgang mit KI zu lernen — ob Tutorials, Ausprobieren oder Austausch mit Kolleg:innen?', answers: [
     'Bisher gar keine — bin noch nicht dazu gekommen',
     'Mal 5 Minuten hier und da, wenn es sich ergibt',
     'Ungefähr 15–30 Minuten pro Woche',
@@ -1118,7 +1155,7 @@ const QUESTIONS = [
     'Ja, mehrere Ergebnisse, die ich direkt nutzen konnte',
     'Ja, regelmäßig — E-Mails, Zusammenfassungen, Checklisten und mehr'
   ]},
-  { dim: 1, text: 'Hand aufs Herz: Spart dir der AI Chat im Arbeitsalltag schon merkbar Zeit?', answers: [
+  { dim: -1, meta: 'zeitersparnis', text: 'Hand aufs Herz: Spart dir der AI Chat im Arbeitsalltag schon merkbar Zeit?', answers: [
     'Nein, eher im Gegenteil — bisher kostet es mich mehr Zeit als es spart',
     'Schwer zu sagen, vielleicht ein paar Minuten',
     'Ja, bei einzelnen Aufgaben spare ich merklich Zeit',
@@ -1187,10 +1224,10 @@ const QUESTIONS = [
 ];
 
 const REIFEGRAD = [
-  { min: 1.0, max: 2.0, label: 'KI-Einsteiger', css: 'einsteiger', desc: 'Du stehst am Anfang deiner KI-Reise — und genau dafür gibt es das Botschafter-Programm. Keine Sorge: In den nächsten Wochen wirst du Schritt für Schritt sicherer.' },
-  { min: 2.1, max: 3.0, label: 'KI-Entdecker', css: 'entdecker', desc: 'Du hast erste Erfahrungen gesammelt und ein Grundverständnis aufgebaut. Jetzt geht es darum, KI regelmäßig in deinen Alltag zu integrieren — das Training hilft dir dabei.' },
-  { min: 3.1, max: 4.0, label: 'KI-Anwender', css: 'anwender', desc: 'Du nutzt KI schon gezielt und verstehst, worauf es ankommt. Jetzt kannst du anderen helfen und Use Cases für deine Abteilung entwickeln.' },
-  { min: 4.1, max: 5.0, label: 'KI-Vorreiter', css: 'vorreiter', desc: 'Du bist vorne dabei! Dein Wissen ist wertvoll für die Community. Teile deine Erfahrungen, hilf anderen beim Einstieg und treibe die Use Cases in deiner Abteilung voran.' }
+  { min: 1.0, max: 2.0, label: 'KI-Einsteiger', css: 'einsteiger', desc: 'Willkommen an Bord! Du stehst am Anfang — und genau dafür gibt es uns. Wir begleiten dich Schritt für Schritt, damit du schon bald die ersten Erfolge mit KI feiern kannst.' },
+  { min: 2.1, max: 3.0, label: 'KI-Entdecker', css: 'entdecker', desc: 'Klasse — du hast die ersten Schritte gemacht und ein gutes Gespür entwickelt! Jetzt helfen wir dir, KI fest in deinen Alltag zu integrieren. Da geht noch richtig was!' },
+  { min: 3.1, max: 4.0, label: 'KI-Anwender', css: 'anwender', desc: 'Stark! Du nutzt KI schon gezielt und verstehst, worauf es ankommt. Jetzt bist du bereit, auch anderen zu helfen und Use Cases für deine Abteilung zu entwickeln.' },
+  { min: 4.1, max: 5.0, label: 'KI-Vorreiter', css: 'vorreiter', desc: 'Wow — du gehörst zu den KI-Vorreitern bei KAEFER! Dein Wissen ist Gold wert für die Community. Teile deine Erfahrungen und hilf mit, die KI-Kultur im Unternehmen voranzubringen!' }
 ];
 
 // ==================== STATE ====================
@@ -1204,7 +1241,8 @@ const state = {
   gesamtScore: 0,
   reifegrad: null,
   feedback: '',
-  radarChart: null
+  radarChart: null,
+  meta: {}
 };
 
 // ==================== DOM ELEMENTS ====================
@@ -1430,6 +1468,14 @@ function calculateScores() {
   state.scores = dimScores;
   state.gesamtScore = Math.round((dimScores.reduce((a, b) => a + b, 0) / dimScores.length) * 10) / 10;
 
+  // Meta-Fragen (Zeitinvest/Zeitersparnis) separat erfassen — nicht bewertet
+  state.meta = {};
+  QUESTIONS.forEach((q, i) => {
+    if (q.meta && state.answers[i]) {
+      state.meta[q.meta] = { answer: state.answers[i], text: q.answers[state.answers[i] - 1] };
+    }
+  });
+
   for (const r of REIFEGRAD) {
     if (state.gesamtScore >= r.min && state.gesamtScore <= r.max) {
       state.reifegrad = r;
@@ -1483,6 +1529,22 @@ function renderResults() {
       bar.style.width = bar.dataset.target + '%';
     });
   }, 300);
+
+  // Zeitprofil rendern (nicht bewertet)
+  const zeitProfil = $('zeit-profil');
+  if (state.meta && (state.meta.zeitinvest || state.meta.zeitersparnis)) {
+    let zeitHtml = '';
+    if (state.meta.zeitinvest) {
+      zeitHtml += `<div class="zeit-item"><span class="zeit-label">Lernzeit pro Woche</span><span class="zeit-value">${state.meta.zeitinvest.text}</span></div>`;
+    }
+    if (state.meta.zeitersparnis) {
+      zeitHtml += `<div class="zeit-item"><span class="zeit-label">Zeitersparnis durch KI</span><span class="zeit-value">${state.meta.zeitersparnis.text}</span></div>`;
+    }
+    $('zeit-details').innerHTML = zeitHtml;
+    zeitProfil.style.display = '';
+  } else {
+    zeitProfil.style.display = 'none';
+  }
 
   // Render radar chart
   renderRadarChart();
@@ -1623,7 +1685,7 @@ Reifegrad: ${state.reifegrad.label} (Gesamt: ${state.gesamtScore.toFixed(1)} von
 
 Die 5 Dimensionen im Detail:
 1. KI-Wissen & Einordnung: ${state.scores[0].toFixed(1)}/5 — Weiß die Person, was KI kann, was nicht, und was der KAEFER AI Chat ist?
-2. Nutzung im Arbeitsalltag: ${state.scores[1].toFixed(1)}/5 — Nutzt die Person KI aktiv für echte Arbeitsaufgaben? Investiert sie Zeit ins Lernen?
+2. Echte Nutzung im Alltag: ${state.scores[1].toFixed(1)}/5 — Nutzt die Person KI aktiv für echte Arbeitsaufgaben und kennt die Features?
 3. Prompt-Kompetenz: ${state.scores[2].toFixed(1)}/5 — Kann die Person gute Prompts schreiben, iterieren und AI-Chat-Features nutzen?
 4. Verantwortung & Spielregeln: ${state.scores[3].toFixed(1)}/5 — Kennt die Person die KI-Spielregeln, handelt transparent und verantwortungsbewusst?
 5. Weitergabe & Multiplikation: ${state.scores[4].toFixed(1)}/5 — Erkennt die Person Use Cases und teilt ihr Wissen aktiv mit Kolleg:innen?
@@ -1651,7 +1713,7 @@ Gib genau EINEN konkreten ersten Schritt im KAEFER AI Chat. Nicht vage ("probier
 - "Erstelle ein Preset 'E-Mail-Zusammenfassung' mit dem Prompt: 'Fasse die folgende E-Mail in 3 Bullet Points zusammen: [E-Mail einfügen]'. Das sparst du dir ab jetzt bei jeder langen Mail."
 - "Lege ein Silo für deine Abteilung an und lade ein wichtiges Dokument hoch — z.B. eine Prozessbeschreibung. Dann können alle im Team den AI Chat zu diesem Dokument befragen."
 
-Tonalität: Warmherzig aber direkt. Du-Form. Wie ein erfahrener Kollege, der es gut meint. Kein Consulting-Deutsch, keine Floskeln wie "Das ist ein toller Anfang!". Lieber ehrlich und konkret.
+Tonalität: Unterstützend und feiernd — wir sind hier, um den Fortschritt sichtbar zu machen und uns darüber zu freuen! Du-Form. Wie ein erfahrener Kollege, der ehrlich und motivierend ist. Kein Consulting-Deutsch, keine leeren Floskeln. Stärken klar benennen und feiern, Potenziale als Chancen darstellen — nie als Defizit.
 Sprache: Deutsch.
 Länge: Ca. 150-200 Wörter.
 WICHTIG: Beginne NICHT mit dem Namen der Person — der wird lokal eingefügt. Beginne direkt mit der Einschätzung.`;
@@ -1814,6 +1876,13 @@ function generatePDF() {
         <div style="font-size:0.9rem;line-height:1.6;color:#444;margin-bottom:20px;">
           ${state.reifegrad.desc}
         </div>
+        ${(state.meta?.zeitinvest || state.meta?.zeitersparnis) ? `
+          <div style="margin-bottom:20px;padding:14px 20px;background:#F8F9FA;border-radius:8px;">
+            <div style="font-weight:700;font-size:0.85rem;color:#1B3A5C;margin-bottom:10px;">⏱ Dein Zeitprofil <span style="font-weight:400;font-size:0.75rem;color:#777;">(wird nicht bewertet)</span></div>
+            ${state.meta.zeitinvest ? `<div style="font-size:0.85rem;margin-bottom:6px;"><strong>Lernzeit pro Woche:</strong> ${state.meta.zeitinvest.text}</div>` : ''}
+            ${state.meta.zeitersparnis ? `<div style="font-size:0.85rem;"><strong>Zeitersparnis durch KI:</strong> ${state.meta.zeitersparnis.text}</div>` : ''}
+          </div>
+        ` : ''}
         ${state.feedback ? `
           <div style="background:#f2f2f2;border-left:4px solid #2E7D32;padding:16px 20px;border-radius:0 8px 8px 0;margin-bottom:20px;">
             <div style="font-weight:700;font-size:0.85rem;color:#1B3A5C;margin-bottom:8px;">Dein KI-Coach sagt:</div>
@@ -1827,18 +1896,29 @@ function generatePDF() {
     </div>
   `;
 
+  // Template kurz sichtbar machen für html2canvas-Rendering
+  template.style.left = '0';
+  template.style.zIndex = '-1';
+  template.style.opacity = '0';
+
   const opt = {
     margin: [8, 8, 8, 8],
     filename: `KI-Assessment_${state.name.replace(/\s+/g, '_')}_${date.replace(/\./g, '-')}.pdf`,
     image: { type: 'jpeg', quality: 0.95 },
-    html2canvas: { scale: 2, useCORS: true, logging: false },
+    html2canvas: { scale: 2, useCORS: true, logging: false, scrollY: -window.scrollY },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
   };
 
   html2pdf().set(opt).from(template).save().then(() => {
     template.innerHTML = '';
+    template.style.left = '-9999px';
+    template.style.zIndex = '';
+    template.style.opacity = '';
   }).catch(err => {
     console.error('PDF-Fehler:', err);
+    template.style.left = '-9999px';
+    template.style.zIndex = '';
+    template.style.opacity = '';
     alert('Der PDF-Export hat leider nicht funktioniert. Tipp: Mache einen Screenshot deines Ergebnisses!');
   });
 }
@@ -1847,17 +1927,21 @@ function generatePDF() {
 $('btn-email').addEventListener('click', () => {
   const date = new Date().toLocaleDateString('de-DE');
   const subject = encodeURIComponent(`KI-Assessment: ${state.name} — ${state.dept} — ${state.reifegrad.label}`);
+
+  const zeitInfo = [];
+  if (state.meta?.zeitinvest) zeitInfo.push(`Lernzeit/Woche: ${state.meta.zeitinvest.text}`);
+  if (state.meta?.zeitersparnis) zeitInfo.push(`Zeitersparnis: ${state.meta.zeitersparnis.text}`);
+
   const body = encodeURIComponent(
     `Hallo Nina,\n\nhier mein KI-Assessment-Ergebnis:\n\n` +
     `Name: ${state.name}\n` +
     `Abteilung: ${state.dept}\n` +
     `Datum: ${date}\n\n` +
-    `Gesamt-Score: ${state.gesamtScore.toFixed(1)} / 5.0\n` +
-    `Reifegrad: ${state.reifegrad.label}\n\n` +
-    `Dimensionen:\n` +
-    state.scores.map((s, i) => `- ${DIMENSIONS[i]}: ${s.toFixed(1)} / 5.0`).join('\n') +
+    `--- REIFEGRAD ---\n` +
+    `Gesamt: ${state.gesamtScore.toFixed(1)} / 5.0 (${state.reifegrad.label})\n` +
+    state.scores.map((s, i) => `${DIM_SHORT[i]}: ${s.toFixed(1)}`).join(' | ') +
     `\n\n` +
-    (state.feedback ? `KI-Feedback:\n${state.feedback}\n\n` : '') +
+    (zeitInfo.length ? `--- ZEITPROFIL ---\n${zeitInfo.join('\n')}\n\n` : '') +
     `Viele Grüße\n${state.name}`
   );
 
