@@ -1092,6 +1092,13 @@ const QUESTIONS = [
     'Ich gebe Rolle, Kontext, Zielgruppe und ein Beispiel für den gewünschten Stil',
     'Rolle, Kontext, Beispiel, Formatvorgabe — und ich verfeinere schrittweise im Dialog'
   ]},
+  { dim: 2, text: 'Du merkst, dass du solche Projektbeschreibungen ständig brauchst — und jedes Mal den Kontext neu tippen musst. Wie könntest du das dauerhaft erleichtern?', answers: [
+    'Ich kopiere meinen besten Prompt jedes Mal neu rein',
+    'Ich speichere meinen Prompt als Snippet und füge ihn per Klick in den Chat ein',
+    'Ich erstelle ein Preset mit Variablen wie [[Kunde]], [[Projekttyp]], [[Leistungen]] — ein Klick, Felder ausfüllen, fertig',
+    'Ich lege zusätzlich eine Instruction an, die der KI dauerhaft sagt, wer KAEFER ist und wie Texte klingen sollen',
+    'Ich kombiniere alles: Instruction (KAEFER-Kontext läuft automatisch) + Preset (Vorlage mit Variablen) + Silo (Firmenwissen wird automatisch herangezogen)'
+  ]},
   { dim: 2, text: 'Du hast einen Prompt geschrieben, aber das Ergebnis überzeugt dich nicht. Was probierst du als Nächstes?', answers: [
     'Ich gebe auf — der AI Chat kann das wohl nicht',
     'Ich stelle die gleiche Frage nochmal und hoffe auf ein besseres Ergebnis',
@@ -1157,7 +1164,7 @@ const state = {
   name: '',
   dept: '',
   currentQuestion: 0,
-  answers: new Array(15).fill(null),
+  answers: new Array(16).fill(null),
   scores: [],
   gesamtScore: 0,
   reifegrad: null,
