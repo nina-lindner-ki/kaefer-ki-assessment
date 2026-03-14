@@ -1108,11 +1108,11 @@ const QUESTIONS = [
   ]},
   // Dimension 4: Spielregeln & Datenbewusstsein
   { dim: 3, text: 'Ein Kollege will schnell eine Antwort und tippt seine Frage in ChatGPT — inklusive Kundennamen und Projektdetails. Was sagst du?', answers: [
-    'Kein Problem — ChatGPT nutzt doch jeder',
-    'Hmm, ist das erlaubt? Ich bin mir nicht sicher',
-    'Das sollte er lieber lassen, aber ich weiß nicht genau warum',
-    'Stopp — Kundendaten gehören nicht in öffentliche Tools. Nimm den KAEFER AI Chat',
-    'Stopp — bei öffentlichen Tools fließen Daten ab. Im KAEFER AI Chat bleiben sie intern und geschützt'
+    'Geht mich nix an — jeder macht seins',
+    'Ich mach\u2019s genauso, geht doch schneller',
+    'Hmm, irgendwas war da mit Datenschutz\u2026 ich frag mal Nina',
+    'Ich sag: „Stopp mal — nimm lieber den KAEFER AI Chat, da fließt nichts ab. Ich zeig dir kurz, wo du den findest."',
+    'Ich sag: „Mach das nochmal in ChatGPT und Tobias steht morgen an deinem Schreibtisch."'
   ]},
   { dim: 3, text: 'Wenn du ein KI-Ergebnis bekommst — z.\u202FB. einen Angebotstext oder eine Analyse — prüfst du es, bevor du es weitergibst?', answers: [
     'Nein, ich übernehme das Ergebnis meistens direkt',
@@ -1165,6 +1165,7 @@ const state = {
   dept: '',
   currentQuestion: 0,
   answers: new Array(16).fill(null),
+  shuffleMap: [],  // Gemischte Reihenfolge der Antworten pro Frage
   scores: [],
   gesamtScore: 0,
   reifegrad: null,
@@ -1201,9 +1202,22 @@ inputDept.addEventListener('keydown', e => {
   if (e.key === 'Enter' && !btnStart.disabled) btnStart.click();
 });
 
+// Fisher-Yates Shuffle — mischt Antworten, damit die beste nicht immer unten steht
+function generateShuffleMap() {
+  state.shuffleMap = QUESTIONS.map(q => {
+    const indices = q.answers.map((_, i) => i);
+    for (let i = indices.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [indices[i], indices[j]] = [indices[j], indices[i]];
+    }
+    return indices;
+  });
+}
+
 btnStart.addEventListener('click', () => {
   state.name = inputName.value.trim();
   state.dept = inputDept.value.trim() || 'Nicht angegeben';
+  generateShuffleMap();
   showScreen('screen-questions');
   renderQuestion(0);
 });
@@ -1227,18 +1241,22 @@ function renderQuestion(index) {
   const isMulti = q.multi === true;
   const hintHtml = isMulti ? '<div class="multi-hint">✋ Mehrfachauswahl möglich</div>' : '';
 
-  // Answer cards (per-question specific labels)
+  // Answer cards — in gemischter Reihenfolge (shuffleMap)
   const currentAnswer = state.answers[index];
-  const cardsHtml = q.answers.map((label, i) => {
-    const val = i + 1;
+  const shuffled = state.shuffleMap[index] || q.answers.map((_, i) => i);
+  const letters = ['A', 'B', 'C', 'D', 'E'];
+
+  const cardsHtml = shuffled.map((origIdx, displayIdx) => {
+    const label = q.answers[origIdx];
+    const score = origIdx + 1;  // Original-Score bleibt erhalten
     let selected = '';
     if (isMulti) {
-      selected = (Array.isArray(currentAnswer) && currentAnswer.includes(val)) ? ' selected' : '';
+      selected = (Array.isArray(currentAnswer) && currentAnswer.includes(score)) ? ' selected' : '';
     } else {
-      selected = currentAnswer === val ? ' selected' : '';
+      selected = currentAnswer === score ? ' selected' : '';
     }
-    return `<button class="answer-card${selected}" data-value="${val}" onclick="selectAnswer(${val})">
-      <span class="answer-number">${val}</span>
+    return `<button class="answer-card${selected}" data-value="${score}" onclick="selectAnswer(${score})">
+      <span class="answer-number">${letters[displayIdx]}</span>
       <span class="answer-label">${label}</span>
       <span class="answer-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
     </button>`;
@@ -1336,7 +1354,12 @@ document.addEventListener('keydown', e => {
   if (!$('screen-questions').classList.contains('active')) return;
 
   if (e.key >= '1' && e.key <= '5') {
-    selectAnswer(parseInt(e.key));
+    // Zifferntaste → Position in der gemischten Reihenfolge → Original-Score
+    const displayIdx = parseInt(e.key) - 1;
+    const shuffled = state.shuffleMap[state.currentQuestion];
+    if (shuffled && shuffled[displayIdx] !== undefined) {
+      selectAnswer(shuffled[displayIdx] + 1);
+    }
   } else if (e.key === 'ArrowRight' || e.key === 'Enter') {
     if (!$('btn-next').disabled) $('btn-next').click();
   } else if (e.key === 'ArrowLeft') {
@@ -1797,6 +1820,7 @@ $('btn-email').addEventListener('click', () => {
 $('btn-retry').addEventListener('click', () => {
   state.answers.fill(null);
   state.currentQuestion = 0;
+  generateShuffleMap(); // Neue Reihenfolge bei erneutem Durchlauf
   state.scores = [];
   state.gesamtScore = 0;
   state.reifegrad = null;
