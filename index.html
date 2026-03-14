@@ -1177,13 +1177,13 @@ const QUESTIONS = [
     'Ich denke sofort: Das ist ein Use Case! Preset mit Variablen, Daten rein, fertig',
     'Ich melde den Use Case im Kanal und biete an, gemeinsam ein Preset zu bauen'
   ]},
-  { dim: 4, text: 'Du hast einen Prompt gebaut, der richtig gut funktioniert — spart dir 30 Minuten pro Woche. Was machst du damit?', answers: [
+  { dim: 4, multi: true, text: 'Du hast einen Prompt gebaut, der richtig gut funktioniert — spart dir 30 Minuten pro Woche. Was machst du damit?', answers: [
     'Ich behalte ihn für mich, ist ja mein Vorteil',
     'Ich erzähle Kolleg:innen davon, wenn es sich ergibt',
     'Ich poste ihn im BotschafterInnen-Kanal',
     'Ich speichere ihn als öffentliches Preset im AI Chat, damit alle ihn nutzen können',
-    'Preset öffentlich + kurzer Post im Kanal mit Erklärung, wofür er gut ist'
-  ]}
+    'Ich schreibe eine kurze Anleitung dazu, wofür der Prompt gut ist und wie man ihn nutzt'
+  ], answerWeights: [0, 0, 1, 2, 2] }
 ];
 
 const REIFEGRAD = [
