@@ -1192,7 +1192,7 @@ const QUESTIONS = [
     'Ich würde es jedes Mal neu in den Chat tippen',
     'Ich würde in den Einstellungen schauen — da muss es doch irgendwo gehen',
     'Ich lege das in meinen Profil-Einstellungen fest — gilt dann automatisch für jeden Chat',
-    'Hab ich längst gemacht — mein Profil ist eingerichtet mit Sprache, Fachgebiet und Stil'
+    'Hab ich längst gemacht — und ich wähle auch bewusst das passende Sprachmodell je nach Aufgabe'
   ]},
   // Dimension 2: Prompt-Kompetenz (3 Fragen)
   { dim: 2, text: 'Denk an das letzte Mal, als der AI Chat ein Ergebnis geliefert hat, das nicht gepasst hat. Was hast du tatsächlich gemacht?', answers: [
@@ -1218,9 +1218,9 @@ const QUESTIONS = [
   ]},
   // Dimension 3: Spielregeln & Datenbewusstsein (2 Fragen)
   { dim: 3, text: 'Ein Kollege will schnell eine Antwort und tippt seine Frage in ChatGPT — inklusive Kundennamen und Projektdetails. Was sagst du?', answers: [
-    'Geht mich nix an — jeder macht seins',
-    'Ich mach\u2019s genauso, geht doch schneller',
-    'Hmm, irgendwas war da mit Datenschutz\u2026 ich frag mal Nina',
+    'Klar, mach ich auch so — ist doch kein Problem',
+    'Hmm, ist das okay? Ich bin mir unsicher, sag aber lieber nichts',
+    'Ich frag erstmal jemanden, ob das so in Ordnung ist',
     'Ich sag: „Stopp mal — nimm lieber den KAEFER AI Chat, da fließt nichts ab. Ich zeig dir kurz, wo du den findest."',
     'Ich sag: „Mach das nochmal in ChatGPT und Tobias steht morgen an deinem Schreibtisch."'
   ]},
@@ -1232,19 +1232,19 @@ const QUESTIONS = [
     'Ich erwähne es von mir aus: AI Chat als Werkzeug genutzt, Ergebnis fachlich geprüft und verantwortet'
   ]},
   // Dimension 4: Weitergabe & Multiplikation (2 Fragen)
-  { dim: 4, text: 'Hast du in den letzten 4 Wochen einem Kollegen oder einer Kollegin etwas zum Thema KI gezeigt, erklärt oder empfohlen?', answers: [
+  { dim: 4, text: 'Hast du in den letzten 14 Tagen einem Kollegen oder einer Kollegin etwas zum Thema KI gezeigt, erklärt oder empfohlen?', answers: [
     'Nein, das Thema kam nicht auf',
     'Ich hab mal erwähnt, dass es den AI Chat gibt',
     'Ich hab jemandem kurz gezeigt, wie man reinkommt',
     'Ich hab einem Kollegen bei einem konkreten Prompt geholfen',
     'Ich hab aktiv eine kleine Schulung oder Demo in meiner Abteilung gemacht'
   ]},
-  { dim: 4, text: 'Hast du einen konkreten Prozess oder eine Aufgabe in deiner Abteilung identifiziert, bei der KI Zeit sparen könnte — und das auch irgendwo festgehalten oder gemeldet?', answers: [
-    'Nein, noch nicht drüber nachgedacht',
-    'Ich habe eine vage Idee, aber noch nichts Konkretes',
-    'Ich habe eine konkrete Idee, aber noch nicht gemeldet',
-    'Ich habe einen Use Case im Kanal gemeldet',
-    'Ich habe einen Use Case gemeldet UND angefangen, ihn im AI Chat zu pilotieren'
+  { dim: 4, text: 'Hast du einen Prozess oder eine Aufgabe in deiner Abteilung identifiziert, bei der KI Zeit sparen könnte?', answers: [
+    'Nein, ich wüsste gerade nicht, wo KI bei uns helfen könnte',
+    'Ja, mir fallen Aufgaben ein — aber ich habe noch mit niemandem darüber gesprochen',
+    'Ja, ich habe im Team oder mit Kolleg:innen darüber gesprochen',
+    'Ja, ich habe einen Use Case im Kanal gemeldet',
+    'Ja, ich habe einen Use Case gemeldet UND angefangen, ihn im AI Chat zu pilotieren'
   ]}
 ];
 
