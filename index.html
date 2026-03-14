@@ -1743,6 +1743,10 @@ Die 5 Dimensionen im Detail:
 4. Verantwortung & Spielregeln: ${state.scores[3].toFixed(1)}/5 — Handelt die Person bei Datenschutz und Transparenz verantwortungsbewusst?
 5. Weitergabe & Multiplikation: ${state.scores[4].toFixed(1)}/5 — Hat die Person tatsächlich Kolleg:innen geholfen und Use Cases identifiziert/gemeldet?
 
+Zeitprofil (wird nicht bewertet, aber wichtig für dein Feedback):
+- Lernzeit pro Woche: ${state.meta?.zeitinvest?.label || 'keine Angabe'}
+- Zeitersparnis pro Woche: ${state.meta?.zeitersparnis?.label || 'keine Angabe'}
+
 Kontext zum KAEFER AI Chat (aichat.kaefer.com):
 - Modelle: GPT-4.1, Claude Sonnet 4, Gemini 2.5 Pro
 - Key-Features: Instructions (eigene Systemregeln pro Chat), Presets (wiederverwendbare Prompt-Vorlagen), Silos (geteiltes Abteilungswissen als Wissensdatenbank), Prompt-Verbesserer (optimiert Prompts automatisch)
@@ -1760,7 +1764,14 @@ Benenne die stärkste Dimension konkret und erkläre, warum das wertvoll ist —
 **Absatz 3 – Schwäche als Chance (2-3 Sätze):**
 Benenne die schwächste Dimension ehrlich. Erkläre konkret, was die Person dadurch verpasst und welchen Mehrwert sie freischalten könnte. Kein Weichspüler.
 
-**Absatz 4 – Konkreter Aktionsplan (3-4 Sätze):**
+**Absatz 4 – Zeitprofil einordnen (1-2 Sätze):**
+Geh kurz auf das Zeitprofil ein. Beispiele:
+- Wenn jemand viel Lernzeit investiert aber noch keine Zeitersparnis hat: Mut machen! "Du investierst schon Zeit ins Lernen — das zahlt sich bald aus. Die Zeitersparnis kommt, sobald du KI für wiederkehrende Aufgaben nutzt."
+- Wenn Lernzeit UND Ersparnis hoch: Feiern! "Du investierst und es zahlt sich bereits aus!"
+- Wenn beides niedrig: Motivieren loszulegen.
+- Wenn Ersparnis > Lernzeit: Hervorheben dass sich das Investment bereits lohnt.
+
+**Absatz 5 – Konkreter Aktionsplan (3-4 Sätze):**
 Gib genau EINEN konkreten ersten Schritt im KAEFER AI Chat. Nicht vage ("probier mal aus"), sondern spezifisch: welches Feature, für welche Aufgabe, mit welchem Ergebnis. Beispiele:
 - "Öffne den AI Chat, erstelle eine neue Instruction mit der Regel: 'Du bist Experte für [Fachgebiet]. Antworte immer auf Deutsch und beziehe dich auf industrielle Anwendungen.' Das personalisiert alle deine zukünftigen Chats."
 - "Erstelle ein Preset 'E-Mail-Zusammenfassung' mit dem Prompt: 'Fasse die folgende E-Mail in 3 Bullet Points zusammen: [E-Mail einfügen]'. Das sparst du dir ab jetzt bei jeder langen Mail."
@@ -1768,7 +1779,7 @@ Gib genau EINEN konkreten ersten Schritt im KAEFER AI Chat. Nicht vage ("probier
 
 Tonalität: Unterstützend und feiernd — wir sind hier, um den Fortschritt sichtbar zu machen und uns darüber zu freuen! Du-Form. Wie ein erfahrener Kollege, der ehrlich und motivierend ist. Kein Consulting-Deutsch, keine leeren Floskeln. Stärken klar benennen und feiern, Potenziale als Chancen darstellen — nie als Defizit.
 Sprache: Deutsch.
-Länge: Ca. 150-200 Wörter.
+Länge: Ca. 180-250 Wörter.
 WICHTIG: Beginne NICHT mit dem Namen der Person — der wird lokal eingefügt. Beginne direkt mit der Einschätzung.`;
 
   // Request geht an den Cloudflare Worker Proxy — NICHT direkt an Anthropic.
@@ -1845,6 +1856,19 @@ function generateLocalFeedback() {
 
   feedback += ' ' + recommendations[weakest];
 
+  // Zeitprofil einordnen
+  const investMin = state.meta?.zeitinvest?.answer || 0;
+  const ersparnisMin = state.meta?.zeitersparnis?.answer || 0;
+  if (investMin >= 3 && ersparnisMin <= 1) {
+    feedback += ' Übrigens: Du investierst bereits Zeit ins KI-Lernen — das ist super und zahlt sich bald aus! Die Zeitersparnis kommt, sobald du KI für wiederkehrende Aufgaben einsetzt.';
+  } else if (investMin >= 3 && ersparnisMin >= 3) {
+    feedback += ' Dein Zeitprofil zeigt: Du investierst ins Lernen UND sparst schon merklich Zeit — genau so soll es laufen!';
+  } else if (ersparnisMin > investMin) {
+    feedback += ' Spannend: Du sparst schon mehr Zeit als du investierst — dein KI-Investment zahlt sich bereits aus!';
+  } else if (investMin <= 1 && ersparnisMin <= 1) {
+    feedback += ' Tipp: Nimm dir bewusst 15 Minuten pro Woche zum Ausprobieren — das ist der schnellste Weg zur echten Zeitersparnis.';
+  }
+
   return feedback;
 }
 
@@ -1886,7 +1910,6 @@ function generatePDF() {
     chartImgSrc = state.radarChart.toBase64Image();
   }
 
-  // Build PDF HTML
   const labelClass = state.reifegrad.css;
   const labelColors = {
     einsteiger: 'background:#FFF3E0;color:#E65100;',
@@ -1895,94 +1918,91 @@ function generatePDF() {
     vorreiter: 'background:#F3E5F5;color:#7B1FA2;'
   };
 
-  const template = $('pdf-template');
-  template.innerHTML = `
-    <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#444;background:#fff;">
-      <div style="background:#1B3A5C;color:#fff;padding:28px 32px;display:flex;justify-content:space-between;align-items:center;">
-        <div>
-          <div style="font-size:1.3rem;font-weight:700;margin-bottom:4px;">KI-Reifegrad-Assessment</div>
-          <div style="font-size:0.85rem;opacity:0.85;">KAEFER KI-Programm 2026</div>
-        </div>
-        <div style="text-align:right;font-size:0.8rem;opacity:0.85;">
-          <div>${state.name}</div>
-          <div>${state.dept}</div>
-          <div>${date}</div>
-        </div>
-      </div>
-      <div style="padding:28px 32px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;padding-bottom:20px;border-bottom:2px solid #f2f2f2;">
-          <div>
-            <div style="font-size:2.2rem;font-weight:700;color:#1B3A5C;">${state.gesamtScore.toFixed(1)} / 5.0</div>
-            <div style="font-size:0.85rem;color:#777;margin-top:4px;">KAEFER Baseline: 2.1 / 5.0</div>
-          </div>
-          <div style="padding:8px 20px;border-radius:20px;font-weight:700;font-size:1rem;${labelColors[labelClass] || ''}">${state.reifegrad.label}</div>
-        </div>
-        ${chartImgSrc ? `<img src="${chartImgSrc}" style="display:block;margin:0 auto 24px auto;max-width:340px;width:100%;">` : ''}
-        <div style="margin-bottom:24px;">
-          ${state.scores.map((s, i) => `
-            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f2f2f2;font-size:0.9rem;">
-              <span style="font-weight:600;color:#1B3A5C;">${DIMENSIONS[i]}</span>
-              <span style="font-weight:700;color:#1B3A5C;">${s.toFixed(1)} / 5.0</span>
-            </div>
-          `).join('')}
-        </div>
-        <div style="font-size:0.9rem;line-height:1.6;color:#444;margin-bottom:20px;">
-          ${state.reifegrad.desc}
-        </div>
-        ${(state.meta?.zeitinvest || state.meta?.zeitersparnis) ? `
-          <div style="margin-bottom:20px;padding:14px 20px;background:#F8F9FA;border-radius:8px;">
-            <div style="font-weight:700;font-size:0.85rem;color:#1B3A5C;margin-bottom:10px;">⏱ Dein Zeitprofil <span style="font-weight:400;font-size:0.75rem;color:#777;">(wird nicht bewertet)</span></div>
-            ${state.meta.zeitinvest ? `<div style="font-size:0.85rem;margin-bottom:6px;"><strong>Lernzeit/Woche:</strong> ${state.meta.zeitinvest.label}</div>` : ''}
-            ${state.meta.zeitersparnis ? `<div style="font-size:0.85rem;"><strong>Zeitersparnis/Woche:</strong> ${state.meta.zeitersparnis.label}</div>` : ''}
-          </div>
-        ` : ''}
-        ${state.feedback ? `
-          <div style="background:#f2f2f2;border-left:4px solid #2E7D32;padding:16px 20px;border-radius:0 8px 8px 0;margin-bottom:20px;">
-            <div style="font-weight:700;font-size:0.85rem;color:#1B3A5C;margin-bottom:8px;">Dein KI-Coach sagt:</div>
-            <div style="font-size:0.88rem;line-height:1.6;color:#444;">${state.feedback}</div>
-          </div>
-        ` : ''}
-      </div>
-      <div style="text-align:center;font-size:0.72rem;color:#999;padding:14px 32px;border-top:1px solid #f2f2f2;">
-        KAEFER KI-Programm 2026 | Erstellt mit dem KI-Reifegrad-Assessment
-      </div>
-    </div>
-  `;
+  // Feedback-Text für PDF aufbereiten (Markdown-Bold → HTML)
+  const feedbackHtml = state.feedback
+    ? state.feedback.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>')
+    : '';
 
-  // Overlay anzeigen während PDF erstellt wird
+  // WICHTIG: Frisches Element erstellen, NICHT #pdf-template verwenden!
+  // html2canvas hat bekannte Probleme mit position:fixed und off-screen Elementen.
+  // Stattdessen: normales Element im Dokumentfluss, sichtbar, mit Overlay darüber.
+  const pdfEl = document.createElement('div');
+  pdfEl.style.cssText = 'position:absolute;left:0;top:0;width:700px;background:#ffffff;z-index:99999;';
+  pdfEl.innerHTML =
+    '<div style="font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;color:#444;background:#fff;">' +
+      '<div style="background:#1B3A5C;color:#fff;padding:28px 32px;display:flex;justify-content:space-between;align-items:center;">' +
+        '<div>' +
+          '<div style="font-size:1.3rem;font-weight:700;margin-bottom:4px;">KI-Reifegrad-Assessment</div>' +
+          '<div style="font-size:0.85rem;opacity:0.85;">KAEFER KI-Programm 2026</div>' +
+        '</div>' +
+        '<div style="text-align:right;font-size:0.8rem;opacity:0.85;">' +
+          '<div>' + state.name + '</div>' +
+          '<div>' + state.dept + '</div>' +
+          '<div>' + date + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="padding:28px 32px;">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;padding-bottom:20px;border-bottom:2px solid #f2f2f2;">' +
+          '<div>' +
+            '<div style="font-size:2.2rem;font-weight:700;color:#1B3A5C;">' + state.gesamtScore.toFixed(1) + ' / 5.0</div>' +
+            '<div style="font-size:0.85rem;color:#777;margin-top:4px;">KAEFER Baseline: 2.1 / 5.0</div>' +
+          '</div>' +
+          '<div style="padding:8px 20px;border-radius:20px;font-weight:700;font-size:1rem;' + (labelColors[labelClass] || '') + '">' + state.reifegrad.label + '</div>' +
+        '</div>' +
+        (chartImgSrc ? '<img src="' + chartImgSrc + '" style="display:block;margin:0 auto 24px auto;max-width:340px;width:100%;">' : '') +
+        '<div style="margin-bottom:24px;">' +
+          state.scores.map(function(s, i) {
+            return '<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f2f2f2;font-size:0.9rem;">' +
+              '<span style="font-weight:600;color:#1B3A5C;">' + DIMENSIONS[i] + '</span>' +
+              '<span style="font-weight:700;color:#1B3A5C;">' + s.toFixed(1) + ' / 5.0</span>' +
+            '</div>';
+          }).join('') +
+        '</div>' +
+        '<div style="font-size:0.9rem;line-height:1.6;color:#444;margin-bottom:20px;">' + state.reifegrad.desc + '</div>' +
+        ((state.meta && (state.meta.zeitinvest || state.meta.zeitersparnis)) ?
+          '<div style="margin-bottom:20px;padding:14px 20px;background:#F8F9FA;border-radius:8px;">' +
+            '<div style="font-weight:700;font-size:0.85rem;color:#1B3A5C;margin-bottom:10px;">Dein Zeitprofil <span style="font-weight:400;font-size:0.75rem;color:#777;">(wird nicht bewertet)</span></div>' +
+            (state.meta.zeitinvest ? '<div style="font-size:0.85rem;margin-bottom:6px;"><strong>Lernzeit/Woche:</strong> ' + state.meta.zeitinvest.label + '</div>' : '') +
+            (state.meta.zeitersparnis ? '<div style="font-size:0.85rem;"><strong>Zeitersparnis/Woche:</strong> ' + state.meta.zeitersparnis.label + '</div>' : '') +
+          '</div>' : '') +
+        (feedbackHtml ?
+          '<div style="background:#f2f2f2;border-left:4px solid #2E7D32;padding:16px 20px;border-radius:0 8px 8px 0;margin-bottom:20px;">' +
+            '<div style="font-weight:700;font-size:0.85rem;color:#1B3A5C;margin-bottom:8px;">Dein KI-Coach sagt:</div>' +
+            '<div style="font-size:0.88rem;line-height:1.6;color:#444;">' + feedbackHtml + '</div>' +
+          '</div>' : '') +
+      '</div>' +
+      '<div style="text-align:center;font-size:0.72rem;color:#999;padding:14px 32px;border-top:1px solid #f2f2f2;">' +
+        'KAEFER KI-Programm 2026 | Erstellt mit dem KI-Reifegrad-Assessment' +
+      '</div>' +
+    '</div>';
+
+  // Overlay anzeigen (z-index HÖHER als pdfEl, damit User nichts sieht)
   const overlay = document.createElement('div');
-  overlay.style.cssText = 'position:fixed;inset:0;background:var(--bg);z-index:99998;display:flex;align-items:center;justify-content:center;font-family:var(--font);color:var(--navy);font-size:1rem;gap:10px;';
-  overlay.innerHTML = '<div class="thinking-dots" style="display:flex;gap:4px;"><span style="width:6px;height:6px;background:var(--navy);border-radius:50%;animation:pulse 1.2s ease infinite;"></span><span style="width:6px;height:6px;background:var(--navy);border-radius:50%;animation:pulse 1.2s ease infinite 0.2s;"></span><span style="width:6px;height:6px;background:var(--navy);border-radius:50%;animation:pulse 1.2s ease infinite 0.4s;"></span></div> PDF wird erstellt…';
+  overlay.style.cssText = 'position:fixed;inset:0;background:#F8F9FA;z-index:100000;display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;color:#1B3A5C;font-size:1rem;gap:10px;';
+  overlay.innerHTML = '<div style="display:flex;gap:4px;"><span style="width:6px;height:6px;background:#1B3A5C;border-radius:50%;animation:pulse 1.2s ease infinite;"></span><span style="width:6px;height:6px;background:#1B3A5C;border-radius:50%;animation:pulse 1.2s ease infinite 0.2s;"></span><span style="width:6px;height:6px;background:#1B3A5C;border-radius:50%;animation:pulse 1.2s ease infinite 0.4s;"></span></div> PDF wird erstellt…';
   document.body.appendChild(overlay);
-
-  // Template muss sichtbar sein für html2canvas (opacity:0 = leeres PDF!)
-  template.style.position = 'fixed';
-  template.style.left = '0';
-  template.style.top = '0';
-  template.style.zIndex = '99999';
+  document.body.appendChild(pdfEl);
 
   const opt = {
     margin: [8, 8, 8, 8],
-    filename: `KI-Assessment_${state.name.replace(/\s+/g, '_')}_${date.replace(/\./g, '-')}.pdf`,
+    filename: 'KI-Assessment_' + state.name.replace(/\s+/g, '_') + '_' + date.replace(/\./g, '-') + '.pdf',
     image: { type: 'jpeg', quality: 0.95 },
     html2canvas: { scale: 2, useCORS: true, logging: false, scrollY: 0, windowWidth: 700 },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
   };
 
-  // Kurz warten bis Browser gerendert hat, dann PDF generieren
-  requestAnimationFrame(() => {
-    html2pdf().set(opt).from(template).save().then(() => {
-      template.innerHTML = '';
-      template.style.cssText = '';
+  // 500ms warten, damit Browser das Element vollständig rendert
+  setTimeout(function() {
+    html2pdf().set(opt).from(pdfEl).save().then(function() {
+      document.body.removeChild(pdfEl);
       document.body.removeChild(overlay);
-    }).catch(err => {
+    }).catch(function(err) {
       console.error('PDF-Fehler:', err);
-      template.innerHTML = '';
-      template.style.cssText = '';
-      document.body.removeChild(overlay);
+      try { document.body.removeChild(pdfEl); } catch(e) {}
+      try { document.body.removeChild(overlay); } catch(e) {}
       alert('Der PDF-Export hat leider nicht funktioniert. Tipp: Mache einen Screenshot deines Ergebnisses!');
     });
-  });
+  }, 500);
 }
 
 // ==================== EMAIL ====================
