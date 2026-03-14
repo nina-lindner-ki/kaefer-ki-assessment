@@ -522,31 +522,33 @@ body {
 
 /* Dimension detail bars */
 .dimension-detail {
-  display: flex;
-  align-items: center;
-  margin-bottom: 14px;
+  margin-bottom: 18px;
 }
 
 .dimension-detail:last-child {
   margin-bottom: 0;
 }
 
+.dim-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+
 .dim-name {
-  width: 120px;
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: 0.85rem;
+  font-weight: 700;
   color: var(--navy);
-  flex-shrink: 0;
   line-height: 1.2;
 }
 
 .dim-bar-track {
-  flex: 1;
   height: 10px;
   background: #E0E4E8;
   border-radius: 5px;
-  margin: 0 10px;
   overflow: hidden;
+  margin-bottom: 4px;
 }
 
 .dim-bar-fill {
@@ -560,9 +562,30 @@ body {
   font-size: 0.85rem;
   font-weight: 700;
   color: var(--navy);
-  width: 32px;
-  text-align: right;
-  flex-shrink: 0;
+}
+
+.dim-desc {
+  font-size: 0.75rem;
+  color: #888;
+  line-height: 1.3;
+}
+
+.btn-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: var(--green);
+  color: #fff;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.btn-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
 }
 
 /* Feedback section */
@@ -819,8 +842,10 @@ body {
   }
 
   .dim-name {
-    width: 90px;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
+  }
+  .dim-desc {
+    font-size: 0.7rem;
   }
 
   .results-card {
@@ -987,8 +1012,16 @@ body {
         </div>
       </div>
 
+      <!-- CTA -->
+      <div class="results-card fade-in-up stagger-5" style="text-align:center;">
+        <a href="https://aichat.kaefer.com" target="_blank" rel="noopener" class="btn-cta">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Jetzt den AI Chat ausprobieren
+        </a>
+      </div>
+
       <!-- Actions -->
-      <div class="results-card fade-in-up stagger-5">
+      <div class="results-card fade-in-up stagger-6">
         <div class="action-buttons">
           <button class="btn-action pdf" id="btn-pdf">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
@@ -1021,14 +1054,22 @@ const PROXY_URL = 'https://kaefer-ki-proxy.nina-lindner.workers.dev';
 
 // ==================== QUESTIONS DATA ====================
 const DIMENSIONS = [
-  'KI-Verständnis & Orientierung',
-  'Anwendung im Arbeitsalltag',
-  'Prompt-Kompetenz & AI Chat',
-  'Spielregeln & Datenbewusstsein',
-  'Veränderung & Weitergabe'
+  'KI-Wissen & Einordnung',
+  'Nutzung im Arbeitsalltag',
+  'Prompt-Kompetenz',
+  'Verantwortung & Spielregeln',
+  'Weitergabe & Multiplikation'
 ];
 
-const DIM_SHORT = ['Verständnis', 'Anwendung', 'Prompting', 'Spielregeln', 'Veränderung'];
+const DIM_SHORT = ['KI-Wissen', 'Echte Nutzung', 'Prompt-Können', 'Verantwortung', 'Wissen teilen'];
+
+const DIM_DESC = [
+  'Weißt du, was KI kann — und wo ihre Grenzen liegen?',
+  'Nutzt du den AI Chat aktiv für echte Aufgaben?',
+  'Kannst du gute Prompts schreiben und Ergebnisse gezielt verbessern?',
+  'Kennst du die Regeln für sichere und transparente KI-Nutzung?',
+  'Erkennst du Use Cases und teilst du dein Wissen mit anderen?'
+];
 
 const KAEFER_BASELINE = [2.2, 2.6, 2.2, 1.4, 2.2];
 
@@ -1055,13 +1096,13 @@ const QUESTIONS = [
     'KI ist gut bei Routineaufgaben, aber Fachkompetenz und Urteilsvermögen kann sie nicht ersetzen',
     'KI macht den Papierkram, damit du bauen kannst — sie ersetzt dich nicht, sie verstärkt dich'
   ]},
-  // Dimension 1: Anwendung im Arbeitsalltag
-  { dim: 1, text: 'Wie oft öffnest du den KAEFER AI Chat (aichat.kaefer.com) für eine echte Arbeitsaufgabe — nicht zum Testen, sondern um etwas zu erledigen?', answers: [
-    'Noch nie — ich habe den AI Chat noch nicht genutzt',
-    'Ein- oder zweimal bisher ausprobiert',
-    'Ab und zu, wenn mir eine passende Aufgabe einfällt',
-    'Regelmäßig, mehrmals pro Woche',
-    'Fast täglich — der AI Chat gehört zu meinem Arbeitsalltag'
+  // Dimension 1: Nutzung im Arbeitsalltag
+  { dim: 1, text: 'Wie viel Zeit nimmst du dir pro Woche, um den Umgang mit KI zu lernen — ob Tutorials, Ausprobieren oder Austausch mit Kolleg:innen?', answers: [
+    'Bisher gar keine — bin noch nicht dazu gekommen',
+    'Mal 5 Minuten hier und da, wenn es sich ergibt',
+    'Ungefähr 15–30 Minuten pro Woche',
+    'Ca. 1 Stunde pro Woche — ich nehme mir bewusst Zeit dafür',
+    'Mehr als 1 Stunde — ich lerne aktiv und probiere regelmäßig Neues aus'
   ]},
   { dim: 1, text: 'Hast du mit dem AI Chat schon ein konkretes Ergebnis erstellt, das du tatsächlich verwendet hast — z.\u202FB. eine E-Mail, eine Zusammenfassung, eine Checkliste?', answers: [
     'Nein, noch kein Ergebnis erstellt',
@@ -1070,6 +1111,13 @@ const QUESTIONS = [
     'Ja, mehrere Ergebnisse, die ich direkt nutzen konnte',
     'Ja, regelmäßig — E-Mails, Zusammenfassungen, Checklisten und mehr'
   ]},
+  { dim: 1, text: 'Hand aufs Herz: Spart dir der AI Chat im Arbeitsalltag schon merkbar Zeit?', answers: [
+    'Nein, eher im Gegenteil — bisher kostet es mich mehr Zeit als es spart',
+    'Schwer zu sagen, vielleicht ein paar Minuten',
+    'Ja, bei einzelnen Aufgaben spare ich merklich Zeit',
+    'Ja, regelmäßig — ich spare mindestens 30 Minuten pro Woche',
+    'Definitiv — KI spart mir mehrere Stunden pro Woche'
+  ]},
   { dim: 1, text: 'Du willst, dass der AI Chat bei jedem Gespräch automatisch auf Deutsch antwortet und sich auf dein Fachgebiet fokussiert. Wie löst du das?', answers: [
     'Keine Ahnung — geht das überhaupt?',
     'Ich würde es jedes Mal neu in den Chat tippen',
@@ -1077,14 +1125,14 @@ const QUESTIONS = [
     'Ich würde eine Instruction anlegen, die das für jeden Chat automatisch regelt',
     'Instruction für die Grundregeln plus ein Preset für wiederkehrende Aufgaben'
   ]},
-  // Dimension 2: Prompt-Kompetenz & AI Chat
-  { dim: 2, text: 'Der AI Chat liefert dir einen Text, der nicht passt — zu lang, falscher Ton, am Thema vorbei. Was tust du?', answers: [
+  // Dimension 2: Prompt-Kompetenz
+  { dim: 2, multi: true, text: 'Der AI Chat liefert dir einen Text, der nicht passt — zu lang, falscher Ton, am Thema vorbei. Was tust du?', answers: [
     'Naja, KI ist halt noch nicht so weit',
     'Ich probier\u2019s nochmal mit dem gleichen Prompt',
     'Ich formuliere den Prompt um und gebe mehr Kontext',
     'Ich sage der KI konkret, was nicht passt: „Kürzer, sachlicher, ohne Aufzählungen"',
     'Ich nutze den Prompt-Verbesserer und arbeite mich schrittweise ans Ergebnis'
-  ]},
+  ], answerWeights: [0, 0, 1, 2, 2] },
   { dim: 2, text: 'Du brauchst eine professionelle Projektbeschreibung für einen Kunden. Wie würdest du den AI Chat dafür nutzen?', answers: [
     'Ich würde schreiben: „Schreib mir eine Projektbeschreibung"',
     'Ich würde das Projekt kurz erwähnen, z.\u202FB. „Schreib was über unser KAEFER-Projekt"',
@@ -1143,7 +1191,7 @@ const state = {
   name: '',
   dept: '',
   currentQuestion: 0,
-  answers: new Array(13).fill(null),
+  answers: new Array(14).fill(null),
   shuffleMap: [],  // Gemischte Reihenfolge der Antworten pro Frage
   scores: [],
   gesamtScore: 0,
@@ -1410,11 +1458,14 @@ function renderResults() {
   // Dimension details
   const detailsHtml = state.scores.map((score, i) => `
     <div class="dimension-detail">
-      <span class="dim-name">${DIM_SHORT[i]}</span>
+      <div class="dim-header">
+        <span class="dim-name">${DIM_SHORT[i]}</span>
+        <span class="dim-score">${score.toFixed(1)}</span>
+      </div>
       <div class="dim-bar-track">
         <div class="dim-bar-fill" style="width: 0%" data-target="${(score / 5) * 100}"></div>
       </div>
-      <span class="dim-score">${score.toFixed(1)}</span>
+      <div class="dim-desc">${DIM_DESC[i]}</div>
     </div>
   `).join('');
   $('dimension-details').innerHTML = detailsHtml;
@@ -1564,11 +1615,11 @@ Ein:e Mitarbeitende:r hat gerade das KI-Reifegrad-Assessment abgeschlossen. Hier
 Reifegrad: ${state.reifegrad.label} (Gesamt: ${state.gesamtScore.toFixed(1)} von 5.0)
 
 Die 5 Dimensionen im Detail:
-1. KI-Verständnis & Orientierung: ${state.scores[0].toFixed(1)}/5 — Weiß die Person, was KI kann, was nicht, und was der KAEFER AI Chat ist?
-2. Anwendung im Arbeitsalltag: ${state.scores[1].toFixed(1)}/5 — Nutzt die Person KI aktiv für echte Arbeitsaufgaben?
-3. Prompt-Kompetenz & AI Chat: ${state.scores[2].toFixed(1)}/5 — Kann die Person gute Prompts schreiben und kennt die AI-Chat-Features?
-4. Spielregeln & Datenbewusstsein: ${state.scores[3].toFixed(1)}/5 — Kennt die Person die 5 KI-Spielregeln und das Ampel-Modell?
-5. Veränderung & Weitergabe: ${state.scores[4].toFixed(1)}/5 — Kann die Person andere begeistern und Use Cases identifizieren?
+1. KI-Wissen & Einordnung: ${state.scores[0].toFixed(1)}/5 — Weiß die Person, was KI kann, was nicht, und was der KAEFER AI Chat ist?
+2. Nutzung im Arbeitsalltag: ${state.scores[1].toFixed(1)}/5 — Nutzt die Person KI aktiv für echte Arbeitsaufgaben? Investiert sie Zeit ins Lernen?
+3. Prompt-Kompetenz: ${state.scores[2].toFixed(1)}/5 — Kann die Person gute Prompts schreiben, iterieren und AI-Chat-Features nutzen?
+4. Verantwortung & Spielregeln: ${state.scores[3].toFixed(1)}/5 — Kennt die Person die KI-Spielregeln, handelt transparent und verantwortungsbewusst?
+5. Weitergabe & Multiplikation: ${state.scores[4].toFixed(1)}/5 — Erkennt die Person Use Cases und teilt ihr Wissen aktiv mit Kolleg:innen?
 
 Kontext zum KAEFER AI Chat (aichat.kaefer.com):
 - Modelle: GPT-4.1, Claude Sonnet 4, Gemini 2.5 Pro
@@ -1638,19 +1689,19 @@ function generateLocalFeedback() {
   };
 
   const strengths = [
-    'beim Thema KI-Verständnis',
-    'bei der praktischen Anwendung im Arbeitsalltag',
-    'beim Thema Prompting',
-    'beim Thema Spielregeln und Datenbewusstsein',
-    'bei Veränderung und Weitergabe'
+    'beim KI-Wissen — du verstehst, was KI kann und wo die Grenzen liegen',
+    'bei der echten Nutzung im Alltag — du setzt KI für reale Aufgaben ein',
+    'beim Prompt-Können — du weißt, wie man gute Ergebnisse aus der KI herausholt',
+    'bei Verantwortung und Spielregeln — du nutzt KI sicher und transparent',
+    'beim Wissen teilen — du erkennst Use Cases und hilfst anderen beim Einstieg'
   ];
 
   const weaknesses = [
-    'beim KI-Grundverständnis',
-    'bei der regelmäßigen Anwendung',
-    'bei der Prompt-Kompetenz',
-    'beim Thema Spielregeln',
-    'beim Thema Veränderung'
+    'beim KI-Wissen — was KI genau kann und wo ihre Grenzen liegen, ist noch unklar',
+    'bei der echten Nutzung — KI regelmäßig für reale Aufgaben einzusetzen',
+    'beim Prompt-Können — mit gezielten Prompts bessere Ergebnisse zu erzielen',
+    'bei den Spielregeln — KI sicher, transparent und verantwortungsvoll einzusetzen',
+    'beim Wissen teilen — andere zu begeistern und Use Cases weiterzutragen'
   ];
 
   const recommendations = [
@@ -1675,11 +1726,22 @@ function generateLocalFeedback() {
   return feedback;
 }
 
+function formatFeedback(text) {
+  // Markdown-Bold → HTML
+  let html = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  // Absätze bei Doppel-Newlines
+  const paragraphs = html.split(/\n\n+/).filter(p => p.trim());
+  if (paragraphs.length > 1) {
+    return paragraphs.map(p => `<p style="margin:0 0 10px 0">${p.replace(/\n/g, '<br>')}</p>`).join('');
+  }
+  return html.replace(/\n/g, '<br>');
+}
+
 function showFeedback(text) {
   state.feedback = text;
   $('feedback-loading').style.display = 'none';
   const feedbackEl = $('feedback-text');
-  feedbackEl.textContent = text;
+  feedbackEl.innerHTML = formatFeedback(text);
   feedbackEl.style.display = 'block';
   feedbackEl.style.opacity = '0';
   requestAnimationFrame(() => {
