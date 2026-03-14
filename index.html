@@ -1097,6 +1097,13 @@ const QUESTIONS = [
     'KI macht den Papierkram, damit du bauen kannst — sie ersetzt dich nicht, sie verstärkt dich'
   ]},
   // Dimension 1: Nutzung im Arbeitsalltag
+  { dim: 1, text: 'Wie oft öffnest du den KAEFER AI Chat (aichat.kaefer.com) für eine echte Arbeitsaufgabe — nicht zum Testen, sondern um etwas zu erledigen?', answers: [
+    'Noch nie — ich habe den AI Chat noch nicht genutzt',
+    'Ein- oder zweimal bisher ausprobiert',
+    'Ab und zu, wenn mir eine passende Aufgabe einfällt',
+    'Regelmäßig, mehrmals pro Woche',
+    'Fast täglich — der AI Chat gehört zu meinem Arbeitsalltag'
+  ]},
   { dim: 1, text: 'Wie viel Zeit nimmst du dir pro Woche, um den Umgang mit KI zu lernen — ob Tutorials, Ausprobieren oder Austausch mit Kolleg:innen?', answers: [
     'Bisher gar keine — bin noch nicht dazu gekommen',
     'Mal 5 Minuten hier und da, wenn es sich ergibt',
@@ -1121,9 +1128,9 @@ const QUESTIONS = [
   { dim: 1, text: 'Du willst, dass der AI Chat bei jedem Gespräch automatisch auf Deutsch antwortet und sich auf dein Fachgebiet fokussiert. Wie löst du das?', answers: [
     'Keine Ahnung — geht das überhaupt?',
     'Ich würde es jedes Mal neu in den Chat tippen',
-    'Ich würde irgendwo in den Einstellungen schauen',
-    'Ich würde eine Instruction anlegen, die das für jeden Chat automatisch regelt',
-    'Instruction für die Grundregeln plus ein Preset für wiederkehrende Aufgaben'
+    'Ich würde in den Einstellungen schauen — da muss es doch irgendwo gehen',
+    'Ich lege das in meinen Profil-Einstellungen fest — gilt dann automatisch für jeden Chat',
+    'Hab ich längst gemacht — mein Profil ist eingerichtet mit Sprache, Fachgebiet und Stil'
   ]},
   // Dimension 2: Prompt-Kompetenz
   { dim: 2, multi: true, text: 'Der AI Chat liefert dir einen Text, der nicht passt — zu lang, falscher Ton, am Thema vorbei. Was tust du?', answers: [
@@ -1191,7 +1198,7 @@ const state = {
   name: '',
   dept: '',
   currentQuestion: 0,
-  answers: new Array(14).fill(null),
+  answers: new Array(15).fill(null),
   shuffleMap: [],  // Gemischte Reihenfolge der Antworten pro Frage
   scores: [],
   gesamtScore: 0,
