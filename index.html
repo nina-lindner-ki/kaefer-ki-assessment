@@ -970,7 +970,7 @@ body {
         <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%"></div>
       </div>
       <div class="progress-info">
-        <span class="progress-text" id="progress-text">Frage 1 von 15</span>
+        <span class="progress-text" id="progress-text">Frage 1 von 14</span>
         <span class="progress-dimension" id="progress-dimension"></span>
       </div>
     </div>
@@ -1111,7 +1111,7 @@ const DIM_DESC = [
 const KAEFER_BASELINE = [2.2, 2.6, 2.2, 1.4, 2.2];
 
 const QUESTIONS = [
-  // Dimension 0: KI-Verständnis & Orientierung
+  // Dimension 0: KI-Wissen & Einordnung (2 Fragen)
   { dim: 0, text: 'Wenn ein Kollege fragt „Was macht der KAEFER AI Chat eigentlich?" — könntest du das in zwei Sätzen erklären?', answers: [
     'Nein, ich wüsste nicht, was ich sagen soll',
     'Ich könnte sagen, dass es irgendwas mit KI zu tun hat',
@@ -1126,21 +1126,15 @@ const QUESTIONS = [
     'Ich nutze den KI-Vorschlag als Basis, schreibe aber sicherheitshalber alles nochmal selbst',
     'Ich prüfe alles, verbessere wo nötig — und dann ab in den normalen Freigabeprozess'
   ]},
-  { dim: 0, text: 'Ein Kollege sagt: „KI kann doch jetzt alles — die ersetzt uns bald alle." Was sagst du?', answers: [
-    'Stimmt, wird eng für uns',
-    'Keine Ahnung, vielleicht?',
-    'Naja, ganz so einfach ist das nicht',
-    'KI ist gut bei Routineaufgaben, aber Fachkompetenz und Urteilsvermögen kann sie nicht ersetzen',
-    'KI macht den Papierkram, damit du bauen kannst — sie ersetzt dich nicht, sie verstärkt dich'
+  // Dimension 1: Nutzung im Arbeitsalltag (3 Fragen)
+  { dim: 1, text: 'Wie oft hast du den KAEFER AI Chat in den letzten 7 Tagen für eine echte Arbeitsaufgabe genutzt — nicht zum Testen, sondern um etwas zu erledigen?', answers: [
+    'Gar nicht',
+    'Einmal',
+    '2–3 Mal',
+    'Fast täglich',
+    'Mehrmals täglich — er ist mein Standard-Werkzeug'
   ]},
-  // Dimension 1: Nutzung im Arbeitsalltag
-  { dim: 1, text: 'Wie oft öffnest du den KAEFER AI Chat (aichat.kaefer.com) für eine echte Arbeitsaufgabe — nicht zum Testen, sondern um etwas zu erledigen?', answers: [
-    'Noch nie — ich habe den AI Chat noch nicht genutzt',
-    'Ein- oder zweimal bisher ausprobiert',
-    'Ab und zu, wenn mir eine passende Aufgabe einfällt',
-    'Regelmäßig, mehrmals pro Woche',
-    'Fast täglich — der AI Chat gehört zu meinem Arbeitsalltag'
-  ]},
+  // Meta: Zeitinvest (nicht bewertet)
   { dim: -1, meta: 'zeitinvest', text: 'Wie viel Zeit nimmst du dir pro Woche, um den Umgang mit KI zu lernen — ob Tutorials, Ausprobieren oder Austausch mit Kolleg:innen?', answers: [
     'Bisher gar keine — bin noch nicht dazu gekommen',
     'Mal 5 Minuten hier und da, wenn es sich ergibt',
@@ -1155,6 +1149,7 @@ const QUESTIONS = [
     'Ja, mehrere Ergebnisse, die ich direkt nutzen konnte',
     'Ja, regelmäßig — E-Mails, Zusammenfassungen, Checklisten und mehr'
   ]},
+  // Meta: Zeitersparnis (nicht bewertet)
   { dim: -1, meta: 'zeitersparnis', text: 'Hand aufs Herz: Spart dir der AI Chat im Arbeitsalltag schon merkbar Zeit?', answers: [
     'Nein, eher im Gegenteil — bisher kostet es mich mehr Zeit als es spart',
     'Schwer zu sagen, vielleicht ein paar Minuten',
@@ -1169,14 +1164,14 @@ const QUESTIONS = [
     'Ich lege das in meinen Profil-Einstellungen fest — gilt dann automatisch für jeden Chat',
     'Hab ich längst gemacht — mein Profil ist eingerichtet mit Sprache, Fachgebiet und Stil'
   ]},
-  // Dimension 2: Prompt-Kompetenz
-  { dim: 2, multi: true, text: 'Der AI Chat liefert dir einen Text, der nicht passt — zu lang, falscher Ton, am Thema vorbei. Was tust du?', answers: [
-    'Naja, KI ist halt noch nicht so weit',
-    'Ich probier\u2019s nochmal mit dem gleichen Prompt',
-    'Ich formuliere den Prompt um und gebe mehr Kontext',
-    'Ich sage der KI konkret, was nicht passt: „Kürzer, sachlicher, ohne Aufzählungen"',
-    'Ich nutze den Prompt-Verbesserer und arbeite mich schrittweise ans Ergebnis'
-  ], answerWeights: [0, 0, 1, 2, 2] },
+  // Dimension 2: Prompt-Kompetenz (3 Fragen)
+  { dim: 2, text: 'Denk an das letzte Mal, als der AI Chat ein Ergebnis geliefert hat, das nicht gepasst hat. Was hast du tatsächlich gemacht?', answers: [
+    'Ich hab aufgegeben und es selbst geschrieben',
+    'Ich hab den gleichen Prompt nochmal geschickt',
+    'Ich hab den Prompt umformuliert',
+    'Ich hab der KI gesagt, was konkret nicht passt, und weiter verfeinert',
+    'Ich hab den Prompt-Verbesserer genutzt und iteriert, bis es gepasst hat'
+  ]},
   { dim: 2, text: 'Du brauchst eine professionelle Projektbeschreibung für einen Kunden. Wie würdest du den AI Chat dafür nutzen?', answers: [
     'Ich würde schreiben: „Schreib mir eine Projektbeschreibung"',
     'Ich würde das Projekt kurz erwähnen, z.\u202FB. „Schreib was über unser KAEFER-Projekt"',
@@ -1184,14 +1179,14 @@ const QUESTIONS = [
     'Ich gebe Rolle, Kontext, Zielgruppe und ein Beispiel für den gewünschten Stil',
     'Rolle, Kontext, Beispiel, Formatvorgabe — und ich verfeinere schrittweise im Dialog'
   ]},
-  { dim: 2, text: 'Du merkst, dass du solche Projektbeschreibungen ständig brauchst — und jedes Mal den Kontext neu tippen musst. Wie könntest du das dauerhaft erleichtern?', answers: [
-    'Ich kopiere meinen besten Prompt jedes Mal neu rein',
-    'Ich speichere meinen Prompt als Snippet und füge ihn per Klick in den Chat ein',
-    'Ich erstelle ein Preset mit Variablen wie [[Kunde]], [[Projekttyp]], [[Leistungen]] — ein Klick, Felder ausfüllen, fertig',
-    'Ich lege zusätzlich eine Instruction an, die der KI dauerhaft sagt, wer KAEFER ist und wie Texte klingen sollen',
-    'Ich kombiniere alles: Instruction (KAEFER-Kontext läuft automatisch) + Preset (Vorlage mit Variablen) + Silo (Firmenwissen wird automatisch herangezogen)'
+  { dim: 2, text: 'Hast du im AI Chat eigene Instructions, Presets oder Silos angelegt — nicht nur angeschaut, sondern selbst erstellt?', answers: [
+    'Nein, noch nichts davon',
+    'Ich habe mir bestehende angeschaut',
+    'Ich habe eins davon selbst erstellt',
+    'Ich habe mehrere erstellt und nutze sie regelmäßig',
+    'Ich habe welche erstellt UND öffentlich für andere freigegeben'
   ]},
-  // Dimension 3: Spielregeln & Datenbewusstsein
+  // Dimension 3: Spielregeln & Datenbewusstsein (2 Fragen)
   { dim: 3, text: 'Ein Kollege will schnell eine Antwort und tippt seine Frage in ChatGPT — inklusive Kundennamen und Projektdetails. Was sagst du?', answers: [
     'Geht mich nix an — jeder macht seins',
     'Ich mach\u2019s genauso, geht doch schneller',
@@ -1206,21 +1201,21 @@ const QUESTIONS = [
     'Ja, mit Unterstützung vom AI Chat — ich hab\u2019s geprüft und angepasst',
     'Ich erwähne es von mir aus: AI Chat als Werkzeug genutzt, Ergebnis fachlich geprüft und verantwortet'
   ]},
-  // Dimension 4: Veränderung & Weitergabe
-  { dim: 4, text: 'Du sitzt in einem Meeting und ein Kollege sagt: „Ich schreibe jeden Freitag denselben Statusbericht, das nervt." Was denkst du?', answers: [
-    'Tja, muss halt',
-    'Da könnte KI bestimmt helfen, aber keine Ahnung wie',
-    'Ich würde ihm den AI Chat empfehlen',
-    'Ich denke sofort: Das ist ein Use Case! Preset mit Variablen, Daten rein, fertig',
-    'Ich melde den Use Case im Kanal und biete an, gemeinsam ein Preset zu bauen'
+  // Dimension 4: Weitergabe & Multiplikation (2 Fragen)
+  { dim: 4, text: 'Hast du in den letzten 4 Wochen einem Kollegen oder einer Kollegin etwas zum Thema KI gezeigt, erklärt oder empfohlen?', answers: [
+    'Nein, das Thema kam nicht auf',
+    'Ich hab mal erwähnt, dass es den AI Chat gibt',
+    'Ich hab jemandem kurz gezeigt, wie man reinkommt',
+    'Ich hab einem Kollegen bei einem konkreten Prompt geholfen',
+    'Ich hab aktiv eine kleine Schulung oder Demo in meiner Abteilung gemacht'
   ]},
-  { dim: 4, multi: true, text: 'Du hast einen Prompt gebaut, der richtig gut funktioniert — spart dir 30 Minuten pro Woche. Was machst du damit?', answers: [
-    'Ich behalte ihn für mich, ist ja mein Vorteil',
-    'Ich erzähle Kolleg:innen davon, wenn es sich ergibt',
-    'Ich poste ihn im BotschafterInnen-Kanal',
-    'Ich speichere ihn als öffentliches Preset im AI Chat, damit alle ihn nutzen können',
-    'Ich schreibe eine kurze Anleitung dazu, wofür der Prompt gut ist und wie man ihn nutzt'
-  ], answerWeights: [0, 0, 1, 2, 2] }
+  { dim: 4, text: 'Hast du einen konkreten Prozess oder eine Aufgabe in deiner Abteilung identifiziert, bei der KI Zeit sparen könnte — und das auch irgendwo festgehalten oder gemeldet?', answers: [
+    'Nein, noch nicht drüber nachgedacht',
+    'Ich habe eine vage Idee, aber noch nichts Konkretes',
+    'Ich habe eine konkrete Idee, aber noch nicht gemeldet',
+    'Ich habe einen Use Case im Kanal gemeldet',
+    'Ich habe einen Use Case gemeldet UND angefangen, ihn im AI Chat zu pilotieren'
+  ]}
 ];
 
 const REIFEGRAD = [
@@ -1235,7 +1230,7 @@ const state = {
   name: '',
   dept: '',
   currentQuestion: 0,
-  answers: new Array(15).fill(null),
+  answers: new Array(14).fill(null),
   shuffleMap: [],  // Gemischte Reihenfolge der Antworten pro Frage
   scores: [],
   gesamtScore: 0,
@@ -1304,7 +1299,7 @@ function renderQuestion(index) {
   const pct = ((index + 1) / totalQuestions) * 100;
   $('progress-bar-fill').style.width = pct + '%';
   $('progress-text').textContent = `Frage ${index + 1} von ${totalQuestions}`;
-  $('progress-dimension').textContent = DIMENSIONS[q.dim];
+  $('progress-dimension').textContent = q.dim >= 0 ? DIMENSIONS[q.dim] : 'Zeitprofil';
 
   // Question text
   $('question-text').textContent = q.text;
@@ -1684,11 +1679,11 @@ Ein:e Mitarbeitende:r hat gerade das KI-Reifegrad-Assessment abgeschlossen. Hier
 Reifegrad: ${state.reifegrad.label} (Gesamt: ${state.gesamtScore.toFixed(1)} von 5.0)
 
 Die 5 Dimensionen im Detail:
-1. KI-Wissen & Einordnung: ${state.scores[0].toFixed(1)}/5 — Weiß die Person, was KI kann, was nicht, und was der KAEFER AI Chat ist?
-2. Echte Nutzung im Alltag: ${state.scores[1].toFixed(1)}/5 — Nutzt die Person KI aktiv für echte Arbeitsaufgaben und kennt die Features?
-3. Prompt-Kompetenz: ${state.scores[2].toFixed(1)}/5 — Kann die Person gute Prompts schreiben, iterieren und AI-Chat-Features nutzen?
-4. Verantwortung & Spielregeln: ${state.scores[3].toFixed(1)}/5 — Kennt die Person die KI-Spielregeln, handelt transparent und verantwortungsbewusst?
-5. Weitergabe & Multiplikation: ${state.scores[4].toFixed(1)}/5 — Erkennt die Person Use Cases und teilt ihr Wissen aktiv mit Kolleg:innen?
+1. KI-Wissen & Einordnung: ${state.scores[0].toFixed(1)}/5 — Versteht die Person, was KI kann und wo die Grenzen liegen?
+2. Echte Nutzung im Alltag: ${state.scores[1].toFixed(1)}/5 — Wie regelmäßig nutzt die Person den AI Chat für echte Aufgaben? Hat sie Features wie Profil-Einstellungen eingerichtet?
+3. Prompt-Kompetenz: ${state.scores[2].toFixed(1)}/5 — Iteriert die Person bei schlechten Ergebnissen? Hat sie eigene Presets, Instructions oder Silos erstellt?
+4. Verantwortung & Spielregeln: ${state.scores[3].toFixed(1)}/5 — Handelt die Person bei Datenschutz und Transparenz verantwortungsbewusst?
+5. Weitergabe & Multiplikation: ${state.scores[4].toFixed(1)}/5 — Hat die Person tatsächlich Kolleg:innen geholfen und Use Cases identifiziert/gemeldet?
 
 Kontext zum KAEFER AI Chat (aichat.kaefer.com):
 - Modelle: GPT-4.1, Claude Sonnet 4, Gemini 2.5 Pro
@@ -1759,26 +1754,26 @@ function generateLocalFeedback() {
 
   const strengths = [
     'beim KI-Wissen — du verstehst, was KI kann und wo die Grenzen liegen',
-    'bei der echten Nutzung im Alltag — du setzt KI für reale Aufgaben ein',
-    'beim Prompt-Können — du weißt, wie man gute Ergebnisse aus der KI herausholt',
+    'bei der echten Nutzung — du setzt den AI Chat regelmäßig für reale Aufgaben ein',
+    'beim Prompt-Können — du iterierst, nutzt Features und holst starke Ergebnisse raus',
     'bei Verantwortung und Spielregeln — du nutzt KI sicher und transparent',
-    'beim Wissen teilen — du erkennst Use Cases und hilfst anderen beim Einstieg'
+    'beim Wissen teilen — du hilfst aktiv anderen und meldest Use Cases'
   ];
 
   const weaknesses = [
     'beim KI-Wissen — was KI genau kann und wo ihre Grenzen liegen, ist noch unklar',
-    'bei der echten Nutzung — KI regelmäßig für reale Aufgaben einzusetzen',
-    'beim Prompt-Können — mit gezielten Prompts bessere Ergebnisse zu erzielen',
+    'bei der echten Nutzung — den AI Chat regelmäßig für echte Arbeitsaufgaben einzusetzen',
+    'beim Prompt-Können — gezielt zu iterieren und Features wie Presets oder Instructions zu nutzen',
     'bei den Spielregeln — KI sicher, transparent und verantwortungsvoll einzusetzen',
-    'beim Wissen teilen — andere zu begeistern und Use Cases weiterzutragen'
+    'beim Wissen teilen — Kolleg:innen aktiv zu helfen und Use Cases zu melden'
   ];
 
   const recommendations = [
     'Schau dir als Nächstes an, was der KAEFER AI Chat alles kann — öffne einfach mal aichat.kaefer.com und probiere eine einfache Aufgabe aus, z.\u202FB. eine E-Mail formulieren.',
-    'Probier den AI Chat mal für eine echte Arbeitsaufgabe aus, die dir regelmäßig begegnet — zum Beispiel eine Zusammenfassung schreiben oder eine Checkliste erstellen. Du wirst merken: Es lohnt sich!',
-    'Teste den Prompt-Verbesserer im AI Chat (du findest ihn unter „Dein Support" in der Seitenleiste) — er zeigt dir sofort, wie du mit besseren Prompts bessere Ergebnisse bekommst.',
+    'Nimm dir diese Woche eine echte Aufgabe vor, die du mit dem AI Chat erledigst — z.\u202FB. eine Zusammenfassung, eine Checkliste oder eine E-Mail-Vorlage. Stell dir einen Reminder!',
+    'Teste den Prompt-Verbesserer im AI Chat — er zeigt dir sofort, wie du mit besseren Prompts bessere Ergebnisse bekommst. Und erstelle ein eigenes Preset für eine Aufgabe, die du regelmäßig machst.',
     'Mach dich mit den 5 KI-Spielregeln bei KAEFER vertraut — sie geben dir Sicherheit im Umgang mit KI und helfen dir, die Tools verantwortungsvoll zu nutzen.',
-    'Teile dein Wissen! Speichere einen guten Prompt als Preset im AI Chat, damit auch deine Kolleg:innen davon profitieren können.'
+    'Zeig diese Woche einem Kollegen oder einer Kollegin, wie der AI Chat funktioniert — ein konkretes Beispiel aus deinem Alltag ist der beste Einstieg.'
   ];
 
   let feedback = openings[label] || openings['KI-Einsteiger'];
