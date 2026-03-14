@@ -262,6 +262,17 @@ body {
   line-height: 1.4;
 }
 
+.multi-hint {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-light);
+  background: var(--info);
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+}
+
 .answer-cards {
   display: flex;
   flex-direction: column;
@@ -1067,13 +1078,13 @@ const QUESTIONS = [
     'Instruction für die Grundregeln plus ein Preset für wiederkehrende Aufgaben'
   ]},
   // Dimension 3: Prompt-Kompetenz & AI Chat
-  { dim: 2, text: 'Der AI Chat liefert ein schlechtes Ergebnis. Was versuchst du, um es zu verbessern?', answers: [
+  { dim: 2, multi: true, text: 'Der AI Chat liefert ein schlechtes Ergebnis. Was versuchst du, um es zu verbessern?', answers: [
     'Ich starte einen neuen Chat mit demselben Prompt und hoffe auf ein besseres Ergebnis',
     'Ich frage einen Kollegen, ob er eine Idee hat',
     'Ich wähle oben links ein anderes, stärkeres Modell aus und starte einen neuen Chat',
     'Ich kopiere meinen Prompt in den Prompt-Verbesserer und probiere die optimierte Version',
     'Ich gebe mehr Kontext und erkläre der KI wie einem Praktikanten, was ich brauche und wie das Ergebnis aussehen soll'
-  ]},
+  ], answerWeights: [0, 0, 1, 2, 2] },
   { dim: 2, text: 'Du brauchst eine professionelle Projektbeschreibung für einen Kunden. Wie würdest du den AI Chat dafür nutzen?', answers: [
     'Ich würde schreiben: „Schreib mir eine Projektbeschreibung"',
     'Ich würde das Projekt kurz erwähnen, z.\u202FB. „Schreib was über unser KAEFER-Projekt"',
@@ -1205,22 +1216,35 @@ function renderQuestion(index) {
   // Question text
   $('question-text').textContent = q.text;
 
+  // Multi-select hint
+  const isMulti = q.multi === true;
+  const hintHtml = isMulti ? '<div class="multi-hint">✋ Mehrfachauswahl möglich</div>' : '';
+
   // Answer cards (per-question specific labels)
+  const currentAnswer = state.answers[index];
   const cardsHtml = q.answers.map((label, i) => {
     const val = i + 1;
-    const selected = state.answers[index] === val ? ' selected' : '';
+    let selected = '';
+    if (isMulti) {
+      selected = (Array.isArray(currentAnswer) && currentAnswer.includes(val)) ? ' selected' : '';
+    } else {
+      selected = currentAnswer === val ? ' selected' : '';
+    }
     return `<button class="answer-card${selected}" data-value="${val}" onclick="selectAnswer(${val})">
       <span class="answer-number">${val}</span>
       <span class="answer-label">${label}</span>
       <span class="answer-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
     </button>`;
   }).join('');
-  $('answer-cards').innerHTML = cardsHtml;
+  $('answer-cards').innerHTML = hintHtml + cardsHtml;
 
   // Navigation
   $('btn-back').textContent = index === 0 ? 'Zurück' : 'Zurück';
   $('btn-next').textContent = index === totalQuestions - 1 ? 'Ergebnis anzeigen' : 'Weiter';
-  $('btn-next').disabled = state.answers[index] === null;
+  const hasAnswer = isMulti
+    ? (Array.isArray(currentAnswer) && currentAnswer.length > 0)
+    : currentAnswer !== null;
+  $('btn-next').disabled = !hasAnswer;
 }
 
 function transitionToQuestion(newIndex, direction) {
@@ -1248,13 +1272,36 @@ function transitionToQuestion(newIndex, direction) {
 
 // ==================== ANSWER SELECTION ====================
 function selectAnswer(value) {
-  state.answers[state.currentQuestion] = value;
+  const q = QUESTIONS[state.currentQuestion];
+  const isMulti = q.multi === true;
 
-  document.querySelectorAll('.answer-card').forEach(card => {
-    card.classList.toggle('selected', parseInt(card.dataset.value) === value);
-  });
+  if (isMulti) {
+    // Toggle: Antwort hinzufügen oder entfernen
+    let current = state.answers[state.currentQuestion];
+    if (!Array.isArray(current)) current = [];
+    const idx = current.indexOf(value);
+    if (idx > -1) {
+      current.splice(idx, 1);
+    } else {
+      current.push(value);
+    }
+    state.answers[state.currentQuestion] = current;
 
-  $('btn-next').disabled = false;
+    document.querySelectorAll('.answer-card').forEach(card => {
+      card.classList.toggle('selected', current.includes(parseInt(card.dataset.value)));
+    });
+
+    $('btn-next').disabled = current.length === 0;
+  } else {
+    // Single-select (wie bisher)
+    state.answers[state.currentQuestion] = value;
+
+    document.querySelectorAll('.answer-card').forEach(card => {
+      card.classList.toggle('selected', parseInt(card.dataset.value) === value);
+    });
+
+    $('btn-next').disabled = false;
+  }
 }
 
 // ==================== QUESTION NAVIGATION ====================
@@ -1267,7 +1314,8 @@ $('btn-back').addEventListener('click', () => {
 });
 
 $('btn-next').addEventListener('click', () => {
-  if (state.answers[state.currentQuestion] === null) return;
+  const ans = state.answers[state.currentQuestion];
+  if (ans === null || (Array.isArray(ans) && ans.length === 0)) return;
 
   if (state.currentQuestion === QUESTIONS.length - 1) {
     calculateAndShowResults();
@@ -1290,11 +1338,29 @@ document.addEventListener('keydown', e => {
 });
 
 // ==================== SCORING ====================
+function getQuestionScore(qIndex) {
+  const q = QUESTIONS[qIndex];
+  const answer = state.answers[qIndex];
+
+  if (q.multi && Array.isArray(answer)) {
+    // Multi-Select: Punkte basierend auf Gewichtung der gewählten Antworten
+    // answerWeights z.B. [0, 0, 1, 2, 2] → max 5 Punkte
+    const weights = q.answerWeights || q.answers.map((_, i) => i + 1);
+    const maxPoints = weights.reduce((a, b) => a + b, 0);
+    const earnedPoints = answer.reduce((acc, val) => acc + (weights[val - 1] || 0), 0);
+    // Normalisieren auf 1–5 Skala
+    return Math.max(1, Math.round((earnedPoints / maxPoints) * 5 * 10) / 10);
+  }
+
+  // Single-Select: Antwort-Index = Score (1–5)
+  return answer || 0;
+}
+
 function calculateScores() {
   const dimScores = [];
   for (let d = 0; d < 5; d++) {
     const dimQuestions = QUESTIONS.map((q, i) => ({ ...q, index: i })).filter(q => q.dim === d);
-    const sum = dimQuestions.reduce((acc, q) => acc + (state.answers[q.index] || 0), 0);
+    const sum = dimQuestions.reduce((acc, q) => acc + getQuestionScore(q.index), 0);
     dimScores.push(Math.round((sum / dimQuestions.length) * 10) / 10);
   }
   state.scores = dimScores;
