@@ -593,7 +593,7 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
   flex-wrap: wrap;
 }
 .zeit-hinweis {
@@ -601,17 +601,47 @@ body {
   color: #999;
   font-weight: 400;
 }
-.zeit-item {
+.zeit-bars {
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  padding: 10px 0;
-  border-bottom: 1px solid #f0f0f0;
-  font-size: 0.85rem;
+  gap: 24px;
 }
-.zeit-item:last-child { border-bottom: none; }
-.zeit-label { color: #555; }
-.zeit-value { font-weight: 700; color: var(--navy); }
+.zeit-bar-item {
+  flex: 1;
+  text-align: center;
+}
+.zeit-bar-label {
+  font-size: 0.75rem;
+  color: #777;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.zeit-bar-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 8px;
+  line-height: 1;
+}
+.zeit-bar-track {
+  height: 8px;
+  background: #f0f0f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.zeit-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.8s ease;
+  width: 0%;
+}
+.zeit-bar-fill.invest { background: var(--navy); }
+.zeit-bar-fill.ersparnis { background: var(--green); }
+.zeit-bar-desc {
+  font-size: 0.72rem;
+  color: #999;
+  margin-top: 6px;
+}
 
 /* Feedback section */
 .feedback-card {
@@ -1135,13 +1165,13 @@ const QUESTIONS = [
     'Mehrmals täglich — er ist mein Standard-Werkzeug'
   ]},
   // Meta: Zeitinvest (nicht bewertet)
-  { dim: -1, meta: 'zeitinvest', text: 'Wie viel Zeit nimmst du dir pro Woche, um den Umgang mit KI zu lernen — ob Tutorials, Ausprobieren oder Austausch mit Kolleg:innen?', answers: [
-    'Bisher gar keine — bin noch nicht dazu gekommen',
-    'Mal 5 Minuten hier und da, wenn es sich ergibt',
-    'Ungefähr 15–30 Minuten pro Woche',
-    'Ca. 1 Stunde pro Woche — ich nehme mir bewusst Zeit dafür',
-    'Mehr als 1 Stunde — ich lerne aktiv und probiere regelmäßig Neues aus'
-  ]},
+  { dim: -1, meta: 'zeitinvest', text: 'Wie viel Zeit investierst du pro Woche, um den Umgang mit KI zu lernen — ob Tutorials, Ausprobieren oder Austausch mit Kolleg:innen?', answers: [
+    '0 Minuten — bin noch nicht dazu gekommen',
+    'Unter 15 Minuten pro Woche',
+    'Ca. 15–30 Minuten pro Woche',
+    'Ca. 30–60 Minuten pro Woche',
+    'Über 1 Stunde pro Woche'
+  ], shortLabels: ['0 Min', '< 15 Min', '~20 Min', '~45 Min', '> 60 Min'] },
   { dim: 1, text: 'Hast du mit dem AI Chat schon ein konkretes Ergebnis erstellt, das du tatsächlich verwendet hast — z.\u202FB. eine E-Mail, eine Zusammenfassung, eine Checkliste?', answers: [
     'Nein, noch kein Ergebnis erstellt',
     'Ich habe etwas ausprobiert, aber nichts weiterverwendet',
@@ -1150,13 +1180,13 @@ const QUESTIONS = [
     'Ja, regelmäßig — E-Mails, Zusammenfassungen, Checklisten und mehr'
   ]},
   // Meta: Zeitersparnis (nicht bewertet)
-  { dim: -1, meta: 'zeitersparnis', text: 'Hand aufs Herz: Spart dir der AI Chat im Arbeitsalltag schon merkbar Zeit?', answers: [
-    'Nein, eher im Gegenteil — bisher kostet es mich mehr Zeit als es spart',
-    'Schwer zu sagen, vielleicht ein paar Minuten',
-    'Ja, bei einzelnen Aufgaben spare ich merklich Zeit',
-    'Ja, regelmäßig — ich spare mindestens 30 Minuten pro Woche',
-    'Definitiv — KI spart mir mehrere Stunden pro Woche'
-  ]},
+  { dim: -1, meta: 'zeitersparnis', text: 'Wie viel Zeit spart dir der AI Chat pro Woche bei deiner Arbeit — geschätzt über alle Aufgaben hinweg?', answers: [
+    'Gar nicht — bisher kostet es mich eher Zeit',
+    'Unter 15 Minuten pro Woche',
+    'Ca. 15–30 Minuten pro Woche',
+    'Ca. 30–60 Minuten pro Woche',
+    'Über 1 Stunde pro Woche'
+  ], shortLabels: ['0 Min', '< 15 Min', '~20 Min', '~45 Min', '> 60 Min'] },
   { dim: 1, text: 'Du willst, dass der AI Chat bei jedem Gespräch automatisch auf Deutsch antwortet und sich auf dein Fachgebiet fokussiert. Wie löst du das?', answers: [
     'Keine Ahnung — geht das überhaupt?',
     'Ich würde es jedes Mal neu in den Chat tippen',
@@ -1467,7 +1497,11 @@ function calculateScores() {
   state.meta = {};
   QUESTIONS.forEach((q, i) => {
     if (q.meta && state.answers[i]) {
-      state.meta[q.meta] = { answer: state.answers[i], text: q.answers[state.answers[i] - 1] };
+      state.meta[q.meta] = {
+        answer: state.answers[i],
+        text: q.answers[state.answers[i] - 1],
+        label: q.shortLabels ? q.shortLabels[state.answers[i] - 1] : q.answers[state.answers[i] - 1]
+      };
     }
   });
 
@@ -1528,15 +1562,39 @@ function renderResults() {
   // Zeitprofil rendern (nicht bewertet)
   const zeitProfil = $('zeit-profil');
   if (state.meta && (state.meta.zeitinvest || state.meta.zeitersparnis)) {
-    let zeitHtml = '';
-    if (state.meta.zeitinvest) {
-      zeitHtml += `<div class="zeit-item"><span class="zeit-label">Lernzeit pro Woche</span><span class="zeit-value">${state.meta.zeitinvest.text}</span></div>`;
-    }
-    if (state.meta.zeitersparnis) {
-      zeitHtml += `<div class="zeit-item"><span class="zeit-label">Zeitersparnis durch KI</span><span class="zeit-value">${state.meta.zeitersparnis.text}</span></div>`;
-    }
+    // Minuten-Mapping: Antwort-Index → geschätzte Minuten pro Woche
+    const minutenMap = [0, 10, 20, 45, 75];
+    const investMin = state.meta.zeitinvest ? minutenMap[state.meta.zeitinvest.answer - 1] : 0;
+    const ersparnisMin = state.meta.zeitersparnis ? minutenMap[state.meta.zeitersparnis.answer - 1] : 0;
+    const investLabel = state.meta.zeitinvest?.label || '—';
+    const ersparnisLabel = state.meta.zeitersparnis?.label || '—';
+    const maxMin = Math.max(investMin, ersparnisMin, 60); // Skalierung
+
+    let zeitHtml = '<div class="zeit-bars">';
+    zeitHtml += `
+      <div class="zeit-bar-item">
+        <div class="zeit-bar-label">Lernzeit</div>
+        <div class="zeit-bar-value">${investLabel}</div>
+        <div class="zeit-bar-track"><div class="zeit-bar-fill invest" data-target="${(investMin / maxMin) * 100}"></div></div>
+        <div class="zeit-bar-desc">pro Woche investiert</div>
+      </div>
+      <div class="zeit-bar-item">
+        <div class="zeit-bar-label">Zeitersparnis</div>
+        <div class="zeit-bar-value">${ersparnisLabel}</div>
+        <div class="zeit-bar-track"><div class="zeit-bar-fill ersparnis" data-target="${(ersparnisMin / maxMin) * 100}"></div></div>
+        <div class="zeit-bar-desc">pro Woche gespart</div>
+      </div>`;
+    zeitHtml += '</div>';
+
     $('zeit-details').innerHTML = zeitHtml;
     zeitProfil.style.display = '';
+
+    // Animate bars
+    setTimeout(() => {
+      zeitProfil.querySelectorAll('.zeit-bar-fill').forEach(bar => {
+        bar.style.width = bar.dataset.target + '%';
+      });
+    }, 500);
   } else {
     zeitProfil.style.display = 'none';
   }
@@ -1874,8 +1932,8 @@ function generatePDF() {
         ${(state.meta?.zeitinvest || state.meta?.zeitersparnis) ? `
           <div style="margin-bottom:20px;padding:14px 20px;background:#F8F9FA;border-radius:8px;">
             <div style="font-weight:700;font-size:0.85rem;color:#1B3A5C;margin-bottom:10px;">⏱ Dein Zeitprofil <span style="font-weight:400;font-size:0.75rem;color:#777;">(wird nicht bewertet)</span></div>
-            ${state.meta.zeitinvest ? `<div style="font-size:0.85rem;margin-bottom:6px;"><strong>Lernzeit pro Woche:</strong> ${state.meta.zeitinvest.text}</div>` : ''}
-            ${state.meta.zeitersparnis ? `<div style="font-size:0.85rem;"><strong>Zeitersparnis durch KI:</strong> ${state.meta.zeitersparnis.text}</div>` : ''}
+            ${state.meta.zeitinvest ? `<div style="font-size:0.85rem;margin-bottom:6px;"><strong>Lernzeit/Woche:</strong> ${state.meta.zeitinvest.label}</div>` : ''}
+            ${state.meta.zeitersparnis ? `<div style="font-size:0.85rem;"><strong>Zeitersparnis/Woche:</strong> ${state.meta.zeitersparnis.label}</div>` : ''}
           </div>
         ` : ''}
         ${state.feedback ? `
@@ -1924,8 +1982,8 @@ $('btn-email').addEventListener('click', () => {
   const subject = encodeURIComponent(`KI-Assessment: ${state.name} — ${state.dept} — ${state.reifegrad.label}`);
 
   const zeitInfo = [];
-  if (state.meta?.zeitinvest) zeitInfo.push(`Lernzeit/Woche: ${state.meta.zeitinvest.text}`);
-  if (state.meta?.zeitersparnis) zeitInfo.push(`Zeitersparnis: ${state.meta.zeitersparnis.text}`);
+  if (state.meta?.zeitinvest) zeitInfo.push(`Lernzeit/Woche: ${state.meta.zeitinvest.label}`);
+  if (state.meta?.zeitersparnis) zeitInfo.push(`Zeitersparnis/Woche: ${state.meta.zeitersparnis.label}`);
 
   const body = encodeURIComponent(
     `Hallo Nina,\n\nhier mein KI-Assessment-Ergebnis:\n\n` +
