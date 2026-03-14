@@ -1949,37 +1949,46 @@ function generatePDF() {
     </div>
   `;
 
-  // Template kurz sichtbar machen für html2canvas-Rendering
+  // Overlay anzeigen während PDF erstellt wird
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:var(--bg);z-index:99998;display:flex;align-items:center;justify-content:center;font-family:var(--font);color:var(--navy);font-size:1rem;gap:10px;';
+  overlay.innerHTML = '<div class="thinking-dots" style="display:flex;gap:4px;"><span style="width:6px;height:6px;background:var(--navy);border-radius:50%;animation:pulse 1.2s ease infinite;"></span><span style="width:6px;height:6px;background:var(--navy);border-radius:50%;animation:pulse 1.2s ease infinite 0.2s;"></span><span style="width:6px;height:6px;background:var(--navy);border-radius:50%;animation:pulse 1.2s ease infinite 0.4s;"></span></div> PDF wird erstellt…';
+  document.body.appendChild(overlay);
+
+  // Template muss sichtbar sein für html2canvas (opacity:0 = leeres PDF!)
+  template.style.position = 'fixed';
   template.style.left = '0';
-  template.style.zIndex = '-1';
-  template.style.opacity = '0';
+  template.style.top = '0';
+  template.style.zIndex = '99999';
 
   const opt = {
     margin: [8, 8, 8, 8],
     filename: `KI-Assessment_${state.name.replace(/\s+/g, '_')}_${date.replace(/\./g, '-')}.pdf`,
     image: { type: 'jpeg', quality: 0.95 },
-    html2canvas: { scale: 2, useCORS: true, logging: false, scrollY: -window.scrollY },
+    html2canvas: { scale: 2, useCORS: true, logging: false, scrollY: 0, windowWidth: 700 },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
   };
 
-  html2pdf().set(opt).from(template).save().then(() => {
-    template.innerHTML = '';
-    template.style.left = '-9999px';
-    template.style.zIndex = '';
-    template.style.opacity = '';
-  }).catch(err => {
-    console.error('PDF-Fehler:', err);
-    template.style.left = '-9999px';
-    template.style.zIndex = '';
-    template.style.opacity = '';
-    alert('Der PDF-Export hat leider nicht funktioniert. Tipp: Mache einen Screenshot deines Ergebnisses!');
+  // Kurz warten bis Browser gerendert hat, dann PDF generieren
+  requestAnimationFrame(() => {
+    html2pdf().set(opt).from(template).save().then(() => {
+      template.innerHTML = '';
+      template.style.cssText = '';
+      document.body.removeChild(overlay);
+    }).catch(err => {
+      console.error('PDF-Fehler:', err);
+      template.innerHTML = '';
+      template.style.cssText = '';
+      document.body.removeChild(overlay);
+      alert('Der PDF-Export hat leider nicht funktioniert. Tipp: Mache einen Screenshot deines Ergebnisses!');
+    });
   });
 }
 
 // ==================== EMAIL ====================
 $('btn-email').addEventListener('click', () => {
   const date = new Date().toLocaleDateString('de-DE');
-  const subject = encodeURIComponent(`KI-Assessment: ${state.name} — ${state.dept} — ${state.reifegrad.label}`);
+  const subject = encodeURIComponent(`KI-Assessment: ${state.name} - ${state.dept} - ${state.reifegrad.label}`);
 
   const zeitInfo = [];
   if (state.meta?.zeitinvest) zeitInfo.push(`Lernzeit/Woche: ${state.meta.zeitinvest.label}`);
@@ -1995,10 +2004,18 @@ $('btn-email').addEventListener('click', () => {
     state.scores.map((s, i) => `${DIM_SHORT[i]}: ${s.toFixed(1)}`).join(' | ') +
     `\n\n` +
     (zeitInfo.length ? `--- ZEITPROFIL ---\n${zeitInfo.join('\n')}\n\n` : '') +
-    `Viele Grüße\n${state.name}`
+    `Viele Gruesse\n${state.name}`
   );
 
-  window.location.href = `mailto:Nina.Lindner.External@kaefer.com?subject=${subject}&body=${body}`;
+  const mailtoUrl = `mailto:Nina.Lindner.External@kaefer.com?subject=${subject}&body=${body}`;
+
+  // Robuster als window.location.href: simuliert <a>-Klick
+  const link = document.createElement('a');
+  link.href = mailtoUrl;
+  link.style.display = 'none';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 });
 
 // ==================== RETRY ====================
