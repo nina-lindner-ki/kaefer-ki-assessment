@@ -211,6 +211,36 @@ body {
   color: var(--text);
 }
 
+.privacy-toggle {
+  display: inline-block;
+  color: var(--primary);
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 6px;
+  font-size: 0.75rem;
+}
+.privacy-toggle:hover { text-decoration: underline; }
+.privacy-details {
+  display: none;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(27,58,92,0.1);
+  font-size: 0.72rem;
+  line-height: 1.7;
+  color: var(--text-light);
+}
+.privacy-details.open { display: block; }
+.privacy-details h4 {
+  font-size: 0.75rem;
+  color: var(--text);
+  margin: 8px 0 3px 0;
+}
+.privacy-details ul {
+  margin: 3px 0 6px 16px;
+  padding: 0;
+}
+.privacy-details li { margin-bottom: 2px; }
+
 /* ==================== QUESTIONS SCREEN ==================== */
 #screen-questions {
   background: var(--bg);
@@ -1048,7 +1078,34 @@ body {
         <button class="btn-primary" id="btn-start" disabled>Los geht's</button>
         <div class="disclaimer">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px;opacity:0.6"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          <strong>Datenschutz:</strong> Dein Name bleibt in deinem Browser und wird nicht gespeichert oder weitergegeben. Zur Auswertung des KI-Programms werden deine Punktzahlen und Abteilung (ohne Namen) automatisch anonymisiert gespeichert. Dein persönliches KI-Feedback wird über einen gesicherten Proxy erstellt — auch dafür wird dein Name nicht übermittelt.
+          <strong>Datenschutz:</strong> Dein Name bleibt in deinem Browser und wird nicht gespeichert oder weitergegeben. Zur Auswertung des KI-Programms werden deine Punktzahlen und Abteilung (ohne Namen) automatisch anonymisiert gespeichert.
+          <span class="privacy-toggle" onclick="this.nextElementSibling.classList.toggle('open')">▸ Mehr erfahren</span>
+          <div class="privacy-details">
+            <h4>Welche Daten werden gespeichert?</h4>
+            <ul>
+              <li>Deine 14 Antworten (als Zahlenwerte 1–5)</li>
+              <li>5 Dimensions-Scores + Gesamtscore</li>
+              <li>Abteilung (sofern angegeben)</li>
+              <li>Zeitprofil (Lernzeit & geschätzte Zeitersparnis)</li>
+              <li>Zeitstempel der Teilnahme</li>
+            </ul>
+            <h4>Was wird NICHT gespeichert?</h4>
+            <ul>
+              <li>Dein Name — wird weder übertragen noch gespeichert</li>
+              <li>Deine E-Mail-Adresse oder IP-Adresse</li>
+              <li>Geräte- oder Browserinformationen</li>
+            </ul>
+            <h4>Zweck der Datenerhebung</h4>
+            <p>Die anonymen Ergebnisse dienen ausschließlich der Auswertung und Weiterentwicklung des KI-Programms bei KAEFER durch die externe KI-Beraterin Nina Lindner.</p>
+            <h4>Verarbeitung & Speicherung</h4>
+            <ul>
+              <li>Die Daten werden über einen gesicherten Proxy (Cloudflare Workers) verarbeitet und in verschlüsseltem Cloud-Speicher (Cloudflare KV) gespeichert.</li>
+              <li>Für das persönliche KI-Feedback wird dein Antwortprofil (ohne Namen) einmalig an die Anthropic API übermittelt.</li>
+              <li>Nur die Projektverantwortliche (Nina Lindner) hat Zugriff auf die gespeicherten Ergebnisse.</li>
+            </ul>
+            <h4>Deine Rechte</h4>
+            <p>Da die Daten vollständig anonym gespeichert werden (ohne Namen oder andere identifizierende Merkmale), ist eine Zuordnung zu einzelnen Personen nicht möglich. Bei Fragen wende dich an Nina Lindner.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -1977,19 +2034,20 @@ function generateLocalFeedback() {
 
 function formatFeedback(text) {
   // [TIPP]...[/TIPP] → eigene Tipp-Box
+  // Robuster Parser: matcht auch wenn [/TIPP] fehlt (dann alles nach [TIPP])
   let tippHtml = '';
-  const tippMatch = text.match(/\[TIPP\]([\s\S]*?)\[\/TIPP\]/);
+  const tippMatch = text.match(/\[TIPP\]([\s\S]*?)(?:\[\/TIPP\]|$)/);
   if (tippMatch) {
     let tippContent = tippMatch[1].trim();
     tippContent = tippContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
     tippHtml = `<div class="feedback-tipp">
       <div class="feedback-tipp-header">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-        Dein n\u00e4chster Schritt
+        Dein nächster Schritt
       </div>
       <div class="feedback-tipp-body">${tippContent}</div>
     </div>`;
-    text = text.replace(/\[TIPP\][\s\S]*?\[\/TIPP\]/, '').trim();
+    text = text.replace(/\[TIPP\][\s\S]*?(?:\[\/TIPP\]|$)/, '').trim();
   }
 
   // Markdown-Bold → HTML
