@@ -686,6 +686,36 @@ body {
   color: var(--text);
 }
 
+.feedback-tipp {
+  margin-top: 16px;
+  background: linear-gradient(135deg, rgba(46,125,50,0.06) 0%, rgba(27,58,92,0.06) 100%);
+  border: 1.5px solid rgba(46,125,50,0.2);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.feedback-tipp-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.88rem;
+}
+
+.feedback-tipp-body {
+  padding: 14px 16px;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: var(--text);
+}
+
+.feedback-tipp-body strong {
+  color: var(--navy);
+}
+
 .thinking-indicator {
   display: flex;
   align-items: center;
@@ -1837,16 +1867,24 @@ Geh kurz auf das Zeitprofil ein. Beispiele:
 - Wenn beides niedrig: Motivieren loszulegen.
 - Wenn Ersparnis > Lernzeit: Hervorheben dass sich das Investment bereits lohnt.
 
-**Absatz 5 – Konkreter Aktionsplan (3-4 Sätze):**
-Gib genau EINEN konkreten ersten Schritt im KAEFER AI Chat. Nicht vage ("probier mal aus"), sondern spezifisch: welches Feature, für welche Aufgabe, mit welchem Ergebnis. Beispiele:
-- "Öffne den AI Chat, erstelle eine neue Instruction mit der Regel: 'Du bist Experte für [Fachgebiet]. Antworte immer auf Deutsch und beziehe dich auf industrielle Anwendungen.' Das personalisiert alle deine zukünftigen Chats."
-- "Erstelle ein Preset 'E-Mail-Zusammenfassung' mit dem Prompt: 'Fasse die folgende E-Mail in 3 Bullet Points zusammen: [E-Mail einfügen]'. Das sparst du dir ab jetzt bei jeder langen Mail."
-- "Lege ein Silo für deine Abteilung an und lade ein wichtiges Dokument hoch — z.B. eine Prozessbeschreibung. Dann können alle im Team den AI Chat zu diesem Dokument befragen."
+**Absatz 5 – Dein konkreter nächster Schritt:**
+Formuliere genau EINEN konkreten, sofort umsetzbaren Tipp. Nicht vage ("probier mal aus"), sondern spezifisch: welches Feature, für welche Aufgabe, mit welchem Ergebnis.
+Umschließe diesen Absatz mit [TIPP] und [/TIPP] Markern, damit er visuell hervorgehoben wird!
+Wähle je nach Ergebnis den passendsten Tipp:
+- Bei schwacher Nutzung: "Öffne den AI Chat (aichat.kaefer.com) und erstelle eine neue Instruction: 'Du bist Experte für [Fachgebiet bei KAEFER]. Antworte immer auf Deutsch.' Das personalisiert alle deine zukünftigen Chats sofort."
+- Bei schwachem Prompt-Können: "Teste den Prompt-Verbesserer im AI Chat — er zeigt dir sofort, wie du mit besseren Prompts bessere Ergebnisse bekommst."
+- Bei schwacher Multiplikation: "Zeig einem Kollegen diese Woche eine Sache, die du mit dem AI Chat gemacht hast — ein konkretes Beispiel wirkt stärker als jede Schulung."
+- Bei schwachem Wissen: "Erstelle ein Preset 'E-Mail-Zusammenfassung' mit dem Prompt: 'Fasse die folgende E-Mail in 3 Bullet Points zusammen.' Das sparst du dir ab sofort bei jeder langen Mail."
+Füge am Ende des Tipps IMMER einen Hinweis auf eine dieser Ressourcen hinzu (passend zum Kontext):
+- "Tausch dich mit den anderen KI-Botschaftern aus — gemeinsam lernt es sich schneller!"
+- "Nina (deine KI-Beraterin) hilft dir gern, wenn du irgendwo nicht weiterkommst."
+- "Schau im Botschafter-Kanal vorbei — dort findest du Inspiration und Unterstützung."
 
 Tonalität: Unterstützend und feiernd — wir sind hier, um den Fortschritt sichtbar zu machen und uns darüber zu freuen! Du-Form. Wie ein erfahrener Kollege, der ehrlich und motivierend ist. Kein Consulting-Deutsch, keine leeren Floskeln. Stärken klar benennen und feiern, Potenziale als Chancen darstellen — nie als Defizit.
 Sprache: Deutsch.
 Länge: Ca. 180-250 Wörter.
-WICHTIG: Beginne NICHT mit dem Namen der Person — der wird lokal eingefügt. Beginne direkt mit der Einschätzung.`;
+WICHTIG: Beginne NICHT mit dem Namen der Person — der wird lokal eingefügt. Beginne direkt mit der Einschätzung.
+WICHTIG: Der letzte Absatz MUSS mit [TIPP] beginnen und mit [/TIPP] enden!`;
 
   // Request geht an den Cloudflare Worker Proxy — NICHT direkt an Anthropic.
   // Der Proxy fügt den API-Key serverseitig hinzu. Kein Key im Client-Code.
@@ -1904,11 +1942,11 @@ function generateLocalFeedback() {
   ];
 
   const recommendations = [
-    'Schau dir als Nächstes an, was der KAEFER AI Chat alles kann — öffne einfach mal aichat.kaefer.com und probiere eine einfache Aufgabe aus, z.\u202FB. eine E-Mail formulieren.',
-    'Nimm dir diese Woche eine echte Aufgabe vor, die du mit dem AI Chat erledigst — z.\u202FB. eine Zusammenfassung, eine Checkliste oder eine E-Mail-Vorlage. Stell dir einen Reminder!',
-    'Teste den Prompt-Verbesserer im AI Chat — er zeigt dir sofort, wie du mit besseren Prompts bessere Ergebnisse bekommst. Und erstelle ein eigenes Preset für eine Aufgabe, die du regelmäßig machst.',
-    'Mach dich mit den 5 KI-Spielregeln bei KAEFER vertraut — sie geben dir Sicherheit im Umgang mit KI und helfen dir, die Tools verantwortungsvoll zu nutzen.',
-    'Zeig diese Woche einem Kollegen oder einer Kollegin, wie der AI Chat funktioniert — ein konkretes Beispiel aus deinem Alltag ist der beste Einstieg.'
+    '[TIPP]Öffne den AI Chat (aichat.kaefer.com) und erstelle eine neue Instruction: "Du bist Experte für [dein Fachgebiet bei KAEFER]. Antworte immer auf Deutsch." Das personalisiert alle deine zukünftigen Chats sofort. Nina (deine KI-Beraterin) hilft dir gern, wenn du irgendwo nicht weiterkommst![/TIPP]',
+    '[TIPP]Nimm dir diese Woche eine echte Aufgabe vor, die du mit dem AI Chat erledigst — z.\u202FB. eine Zusammenfassung, eine Checkliste oder eine E-Mail-Vorlage. Tausch dich mit den anderen KI-Botschaftern aus — gemeinsam lernt es sich schneller![/TIPP]',
+    '[TIPP]Teste den Prompt-Verbesserer im AI Chat — er zeigt dir sofort, wie du bessere Ergebnisse bekommst. Erstelle dann ein eigenes Preset für eine Aufgabe, die du regelmäßig machst. Schau im Botschafter-Kanal vorbei — dort findest du Inspiration![/TIPP]',
+    '[TIPP]Mach dich mit den 5 KI-Spielregeln bei KAEFER vertraut — sie geben dir Sicherheit im Umgang mit KI. Bei Fragen hilft dir Nina als KI-Beraterin jederzeit weiter![/TIPP]',
+    '[TIPP]Zeig einem Kollegen oder einer Kollegin diese Woche eine Sache, die du mit dem AI Chat gemacht hast — ein konkretes Beispiel wirkt stärker als jede Schulung. Tausch dich im Botschafter-Kanal aus![/TIPP]'
   ];
 
   let feedback = openings[label] || openings['KI-Einsteiger'];
@@ -1939,14 +1977,33 @@ function generateLocalFeedback() {
 }
 
 function formatFeedback(text) {
+  // [TIPP]...[/TIPP] → eigene Tipp-Box
+  let tippHtml = '';
+  const tippMatch = text.match(/\[TIPP\]([\s\S]*?)\[\/TIPP\]/);
+  if (tippMatch) {
+    let tippContent = tippMatch[1].trim();
+    tippContent = tippContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+    tippHtml = `<div class="feedback-tipp">
+      <div class="feedback-tipp-header">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        Dein n\u00e4chster Schritt
+      </div>
+      <div class="feedback-tipp-body">${tippContent}</div>
+    </div>`;
+    text = text.replace(/\[TIPP\][\s\S]*?\[\/TIPP\]/, '').trim();
+  }
+
   // Markdown-Bold → HTML
   let html = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
   // Absätze bei Doppel-Newlines
   const paragraphs = html.split(/\n\n+/).filter(p => p.trim());
   if (paragraphs.length > 1) {
-    return paragraphs.map(p => `<p style="margin:0 0 10px 0">${p.replace(/\n/g, '<br>')}</p>`).join('');
+    html = paragraphs.map(p => `<p style="margin:0 0 10px 0">${p.replace(/\n/g, '<br>')}</p>`).join('');
+  } else {
+    html = html.replace(/\n/g, '<br>');
   }
-  return html.replace(/\n/g, '<br>');
+
+  return html + tippHtml;
 }
 
 function showFeedback(text) {
