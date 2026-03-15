@@ -96,11 +96,34 @@ body {
 }
 
 .start-card h1 {
-  font-size: 1.75rem;
-  color: var(--navy);
+  font-size: 1.85rem;
+  background: linear-gradient(135deg, var(--navy) 0%, var(--red) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin-bottom: 8px;
-  font-weight: 700;
+  font-weight: 800;
   line-height: 1.2;
+}
+
+.start-intro {
+  background: linear-gradient(135deg, rgba(27,58,92,0.06) 0%, rgba(192,57,43,0.06) 100%);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  margin-bottom: 24px;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.start-intro strong {
+  color: var(--navy);
+}
+
+.start-intro-icon {
+  display: inline-block;
+  margin-right: 6px;
+  vertical-align: -2px;
 }
 
 .start-card .subline {
@@ -749,6 +772,92 @@ body {
 }
 
 
+/* ==================== ACCESS GATE ==================== */
+#screen-access {
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(160deg, var(--navy) 0%, var(--navy-light) 100%);
+  padding: 40px 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.access-card {
+  background: var(--white);
+  border-radius: 20px;
+  padding: 40px 32px;
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.access-card .access-icon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, rgba(27,58,92,0.08) 0%, rgba(192,57,43,0.08) 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px auto;
+}
+
+.access-card h2 {
+  font-size: 1.3rem;
+  color: var(--navy);
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.access-card .access-sub {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  margin-bottom: 24px;
+}
+
+.access-input-wrap {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.access-input-wrap input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid #E0E4E8;
+  border-radius: var(--radius-sm);
+  font-size: 1.1rem;
+  text-align: center;
+  letter-spacing: 0.15em;
+  font-weight: 600;
+  color: var(--navy);
+  transition: border-color var(--transition);
+  text-transform: uppercase;
+}
+
+.access-input-wrap input:focus {
+  outline: none;
+  border-color: var(--navy);
+}
+
+.access-input-wrap input.error {
+  border-color: var(--red);
+  animation: shake 0.4s ease;
+}
+
+.access-error {
+  color: var(--red);
+  font-size: 0.8rem;
+  min-height: 1.2em;
+  margin-bottom: 8px;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
 /* ==================== ANIMATIONS ==================== */
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(20px); }
@@ -851,13 +960,33 @@ body {
 <!-- ==================== APP ==================== -->
 <div id="app">
 
+  <!-- ===== ACCESS GATE ===== -->
+  <div id="screen-access" class="screen active">
+    <div class="access-card">
+      <div class="access-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <h2>Willkommen!</h2>
+      <p class="access-sub">Gib deinen Zugangscode ein, um das Assessment zu starten.</p>
+      <div class="access-input-wrap">
+        <input type="text" id="access-code" placeholder="Zugangscode" autocomplete="off" autofocus>
+      </div>
+      <div class="access-error" id="access-error"></div>
+      <button class="btn-primary" id="btn-access" style="width:100%;">Zugang freischalten</button>
+    </div>
+  </div>
+
   <!-- ===== START SCREEN ===== -->
-  <div id="screen-start" class="screen active">
+  <div id="screen-start" class="screen">
     <div class="container" style="display:flex; justify-content:center; align-items:center; flex:1;">
       <div class="start-card">
         <div class="start-badge">KAEFER KI-Programm 2026</div>
         <h1>Wo stehst du mit KI?</h1>
-        <p class="subline">Wir sind hier, um dich zu unterstützen — und dieses Assessment hilft uns dabei.<br>Kein Test, keine Noten — nur eine ehrliche Standortbestimmung, damit wir gemeinsam deinen Fortschritt sichtbar machen und feiern können.</p>
+        <p class="subline">Kein Test, keine Noten — nur eine ehrliche Standortbestimmung.</p>
+        <div class="start-intro">
+          <svg class="start-intro-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"/><line x1="9" y1="21" x2="15" y2="21"/></svg>
+          <strong>Warum das hier?</strong> Dieses Assessment zeigt dir, wo du gerade stehst — und hilft uns, das KI-Programm genau auf euch zuzuschneiden. Du bekommst ein persönliches Feedback mit konkreten Tipps, und wir sehen, wo wir euch am besten unterstützen können. Win-win!
+        </div>
 
         <div class="form-group">
           <label for="input-name">Spitzname</label>
@@ -1017,10 +1146,43 @@ body {
 
 <script>
 // ==================== CONFIGURATION ====================
-// Proxy-URL: Cloudflare Worker der den API-Key sicher serverseitig verwaltet.
-// Der API-Key liegt NICHT im Client-Code, sondern als Secret auf Cloudflare.
-// Ohne Proxy-URL wird ein lokaler Feedback-Generator genutzt.
 const PROXY_URL = 'https://kaefer-ki-proxy.nina-lindner.workers.dev';
+// Zugangscode (einfacher Hash-Vergleich, kein echter Sicherheitsmechanismus)
+const ACCESS_HASH = 'e2fe66'; // Hash von 'KAEFER2026'
+
+// ==================== ACCESS GATE ====================
+function simpleHash(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash) + str.charCodeAt(i);
+    hash = hash & 0xFFFFFF;
+  }
+  return hash.toString(16);
+}
+
+const accessInput = $('access-code');
+const accessError = $('access-error');
+const btnAccess = $('btn-access');
+
+function checkAccess() {
+  const code = accessInput.value.trim().toUpperCase();
+  if (!code) return;
+
+  if (simpleHash(code) === ACCESS_HASH) {
+    showScreen('screen-start');
+    accessError.textContent = '';
+  } else {
+    accessInput.classList.add('error');
+    accessError.textContent = 'Falscher Code. Frag bei Nina nach!';
+    setTimeout(() => accessInput.classList.remove('error'), 500);
+  }
+}
+
+btnAccess.addEventListener('click', checkAccess);
+accessInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') checkAccess();
+  accessError.textContent = '';
+});
 
 // ==================== QUESTIONS DATA ====================
 const DIMENSIONS = [
