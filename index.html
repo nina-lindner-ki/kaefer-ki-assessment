@@ -1052,40 +1052,16 @@ body {
           <label for="input-name">Spitzname</label>
           <input type="text" id="input-name" placeholder="Wie sollen wir dich nennen?" autocomplete="off">
         </div>
-        <div class="form-group">
-          <label for="input-dept">Abteilung</label>
-          <input type="text" id="input-dept" list="dept-list" placeholder="z.B. Kalkulation, HR, Bauleitung...">
-          <datalist id="dept-list">
-            <option value="Kalkulation">
-            <option value="Bauleitung">
-            <option value="Projektmanagement">
-            <option value="HR / Personal">
-            <option value="Einkauf">
-            <option value="Vertrieb">
-            <option value="Finanzen / Controlling">
-            <option value="IT">
-            <option value="Isolierung">
-            <option value="Brandschutz">
-            <option value="Oberflächenschutz">
-            <option value="Gerüstbau">
-            <option value="HSEQ">
-            <option value="Verwaltung">
-            <option value="Logistik">
-            <option value="Arbeitsvorbereitung">
-          </datalist>
-        </div>
-
         <button class="btn-primary" id="btn-start" disabled>Los geht's</button>
         <div class="disclaimer">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px;opacity:0.6"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          <strong>Datenschutz:</strong> Dein Name bleibt in deinem Browser und wird nicht gespeichert oder weitergegeben. Zur Auswertung des KI-Programms werden deine Punktzahlen und Abteilung (ohne Namen) automatisch anonymisiert gespeichert.
+          <strong>Datenschutz:</strong> Dein Name bleibt in deinem Browser und wird nicht gespeichert oder weitergegeben. Zur Auswertung des KI-Programms werden deine Punktzahlen (ohne Namen oder Abteilung) automatisch anonymisiert gespeichert.
           <span class="privacy-toggle" onclick="this.nextElementSibling.classList.toggle('open')">▸ Mehr erfahren</span>
           <div class="privacy-details">
             <h4>Welche Daten werden gespeichert?</h4>
             <ul>
               <li>Deine 14 Antworten (als Zahlenwerte 1–5)</li>
               <li>5 Dimensions-Scores + Gesamtscore</li>
-              <li>Abteilung (sofern angegeben)</li>
               <li>Zeitprofil (Lernzeit & geschätzte Zeitersparnis)</li>
               <li>Zeitstempel der Teilnahme</li>
             </ul>
@@ -1376,7 +1352,6 @@ const REIFEGRAD = [
 // ==================== STATE ====================
 const state = {
   name: '',
-  dept: '',
   currentQuestion: 0,
   answers: new Array(14).fill(null),
   shuffleMap: [],  // Gemischte Reihenfolge der Antworten pro Frage
@@ -1433,7 +1408,6 @@ accessInput.addEventListener('keydown', (e) => {
 
 // ==================== START SCREEN ====================
 const inputName = $('input-name');
-const inputDept = $('input-dept');
 const btnStart = $('btn-start');
 
 function validateStart() {
@@ -1446,10 +1420,6 @@ inputName.addEventListener('input', validateStart);
 inputName.addEventListener('keydown', e => {
   if (e.key === 'Enter' && !btnStart.disabled) btnStart.click();
 });
-inputDept.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && !btnStart.disabled) btnStart.click();
-});
-
 // Fisher-Yates Shuffle — mischt Antworten, damit die beste nicht immer unten steht
 function generateShuffleMap() {
   state.shuffleMap = QUESTIONS.map(q => {
@@ -1464,7 +1434,6 @@ function generateShuffleMap() {
 
 btnStart.addEventListener('click', () => {
   state.name = inputName.value.trim();
-  state.dept = inputDept.value.trim() || 'Nicht angegeben';
   generateShuffleMap();
   showScreen('screen-questions');
   renderQuestion(0);
@@ -2083,7 +2052,6 @@ async function submitResultsAnonymously() {
 
   const payload = {
     wave: wave,
-    dept: state.dept || 'Nicht angegeben',
     scores: state.scores,
     gesamtScore: state.gesamtScore,
     reifegrad: state.reifegrad.label,
@@ -2131,7 +2099,6 @@ $('btn-retry').addEventListener('click', () => {
   }
   showScreen('screen-start');
   inputName.value = state.name;
-  inputDept.value = state.dept !== 'Nicht angegeben' ? state.dept : '';
   validateStart();
 });
 </script>
