@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>KAEFER KI-Reifegrad-Assessment</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
 :root {
   --navy: #1B3A5C;
@@ -749,103 +748,6 @@ body {
   color: var(--text);
 }
 
-/* ==================== PDF TEMPLATE ==================== */
-#pdf-template {
-  position: absolute;
-  left: -9999px;
-  top: 0;
-  width: 700px;
-  font-family: var(--font);
-  color: var(--text);
-  background: var(--white);
-}
-
-.pdf-header {
-  background: var(--navy);
-  color: var(--white);
-  padding: 28px 32px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.pdf-header h2 {
-  font-size: 1.3rem;
-  margin: 0;
-}
-
-.pdf-header .pdf-meta {
-  font-size: 0.8rem;
-  opacity: 0.85;
-  text-align: right;
-}
-
-.pdf-body {
-  padding: 28px 32px;
-}
-
-.pdf-score-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  padding-bottom: 20px;
-  border-bottom: 2px solid var(--info);
-}
-
-.pdf-score-big {
-  font-size: 2.2rem;
-  font-weight: 700;
-  color: var(--navy);
-}
-
-.pdf-label {
-  font-size: 1.1rem;
-  font-weight: 700;
-  padding: 6px 16px;
-  border-radius: 16px;
-}
-
-.pdf-chart-img {
-  display: block;
-  margin: 16px auto;
-  max-width: 350px;
-}
-
-.pdf-dims {
-  margin: 20px 0;
-}
-
-.pdf-dim-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--info);
-  font-size: 0.9rem;
-}
-
-.pdf-dim-row span:first-child {
-  font-weight: 600;
-  color: var(--navy);
-}
-
-.pdf-feedback {
-  background: var(--info);
-  border-left: 4px solid var(--green);
-  padding: 16px 20px;
-  margin: 20px 0;
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  font-size: 0.9rem;
-  line-height: 1.6;
-}
-
-.pdf-footer {
-  text-align: center;
-  font-size: 0.75rem;
-  color: var(--text-light);
-  padding: 16px 32px;
-  border-top: 1px solid var(--info);
-}
 
 /* ==================== ANIMATIONS ==================== */
 @keyframes fadeInUp {
@@ -987,7 +889,7 @@ body {
         <button class="btn-primary" id="btn-start" disabled>Los geht's</button>
         <div class="disclaimer">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px;opacity:0.6"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          <strong>Datenschutz:</strong> Wir fragen bewusst nur einen Spitznamen und deine Abteilung — beides bleibt in deinem Browser und wird nicht an Server gesendet. Für dein persönliches KI-Feedback werden ausschließlich anonymisierte Punktzahlen (ohne Name oder Abteilung) über einen gesicherten Proxy verarbeitet. Dein Ergebnis siehst nur du — teilen kannst du es per PDF oder E-Mail, wenn du das möchtest.
+          <strong>Datenschutz:</strong> Dein Name bleibt in deinem Browser und wird nicht gespeichert oder weitergegeben. Zur Auswertung des KI-Programms werden deine Punktzahlen und Abteilung (ohne Namen) automatisch anonymisiert gespeichert. Dein persönliches KI-Feedback wird über einen gesicherten Proxy erstellt — auch dafür wird dein Name nicht übermittelt.
         </div>
       </div>
     </div>
@@ -1087,17 +989,21 @@ body {
         </a>
       </div>
 
+      <!-- Auto-Submit Bestätigung -->
+      <div class="results-card fade-in-up stagger-7" id="submit-status" style="text-align:center;">
+        <div id="submit-pending" style="font-size:0.85rem;color:var(--text-light);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px;"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"/></svg>
+          Ergebnisse werden anonymisiert gespeichert…
+        </div>
+        <div id="submit-success" style="display:none;font-size:0.85rem;color:var(--green);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" style="vertical-align:-2px;margin-right:4px;"><polyline points="20 6 9 17 4 12"/></svg>
+          Ergebnisse anonymisiert gespeichert
+        </div>
+      </div>
+
       <!-- Actions -->
       <div class="results-card fade-in-up stagger-7">
-        <div class="action-buttons">
-          <button class="btn-action pdf" id="btn-pdf">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-            Als PDF speichern
-          </button>
-          <button class="btn-action email" id="btn-email">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            Ergebnis an Nina senden
-          </button>
+        <div class="action-buttons" style="justify-content:center;">
           <button class="btn-action retry" id="btn-retry">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
             Nochmal machen
@@ -1108,9 +1014,6 @@ body {
   </div>
 
 </div>
-
-<!-- Hidden PDF template -->
-<div id="pdf-template"></div>
 
 <script>
 // ==================== CONFIGURATION ====================
@@ -1520,6 +1423,7 @@ function calculateAndShowResults() {
   showScreen('screen-results');
   renderResults();
   generateFeedback();
+  submitResultsAnonymously();
 }
 
 function renderResults() {
@@ -1896,147 +1800,45 @@ function showFeedback(text) {
   });
 }
 
-// ==================== PDF EXPORT ====================
-$('btn-pdf').addEventListener('click', () => {
-  generatePDF();
-});
+// ==================== ANONYMOUS AUTO-SUBMIT ====================
+async function submitResultsAnonymously() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const wave = urlParams.get('wave') || 'T0';
 
-function generatePDF() {
-  const date = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
-
-  // Get chart as image
-  let chartImgSrc = '';
-  if (state.radarChart) {
-    chartImgSrc = state.radarChart.toBase64Image();
-  }
-
-  const labelClass = state.reifegrad.css;
-  const labelColors = {
-    einsteiger: 'background:#FFF3E0;color:#E65100;',
-    entdecker: 'background:#E3F2FD;color:#1565C0;',
-    anwender: 'background:#E8F5E9;color:#2E7D32;',
-    vorreiter: 'background:#F3E5F5;color:#7B1FA2;'
+  const payload = {
+    wave: wave,
+    dept: state.dept || 'Nicht angegeben',
+    scores: state.scores,
+    gesamtScore: state.gesamtScore,
+    reifegrad: state.reifegrad.label,
+    answers: state.answers,
+    meta: {
+      zeitinvest: state.meta?.zeitinvest?.answer || null,
+      zeitersparnis: state.meta?.zeitersparnis?.answer || null
+    },
+    timestamp: new Date().toISOString(),
+    version: '1'
   };
 
-  // Feedback-Text für PDF aufbereiten (Markdown-Bold → HTML)
-  const feedbackHtml = state.feedback
-    ? state.feedback.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>')
-    : '';
-
-  // WICHTIG: Frisches Element erstellen, NICHT #pdf-template verwenden!
-  // html2canvas hat bekannte Probleme mit position:fixed und off-screen Elementen.
-  // Stattdessen: normales Element im Dokumentfluss, sichtbar, mit Overlay darüber.
-  const pdfEl = document.createElement('div');
-  pdfEl.style.cssText = 'position:absolute;left:0;top:0;width:700px;background:#ffffff;z-index:99999;';
-  pdfEl.innerHTML =
-    '<div style="font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;color:#444;background:#fff;">' +
-      '<div style="background:#1B3A5C;color:#fff;padding:28px 32px;display:flex;justify-content:space-between;align-items:center;">' +
-        '<div>' +
-          '<div style="font-size:1.3rem;font-weight:700;margin-bottom:4px;">KI-Reifegrad-Assessment</div>' +
-          '<div style="font-size:0.85rem;opacity:0.85;">KAEFER KI-Programm 2026</div>' +
-        '</div>' +
-        '<div style="text-align:right;font-size:0.8rem;opacity:0.85;">' +
-          '<div>' + state.name + '</div>' +
-          '<div>' + state.dept + '</div>' +
-          '<div>' + date + '</div>' +
-        '</div>' +
-      '</div>' +
-      '<div style="padding:28px 32px;">' +
-        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;padding-bottom:20px;border-bottom:2px solid #f2f2f2;">' +
-          '<div>' +
-            '<div style="font-size:2.2rem;font-weight:700;color:#1B3A5C;">' + state.gesamtScore.toFixed(1) + ' / 5.0</div>' +
-            '<div style="font-size:0.85rem;color:#777;margin-top:4px;">KAEFER Baseline: 2.1 / 5.0</div>' +
-          '</div>' +
-          '<div style="padding:8px 20px;border-radius:20px;font-weight:700;font-size:1rem;' + (labelColors[labelClass] || '') + '">' + state.reifegrad.label + '</div>' +
-        '</div>' +
-        (chartImgSrc ? '<img src="' + chartImgSrc + '" style="display:block;margin:0 auto 24px auto;max-width:340px;width:100%;">' : '') +
-        '<div style="margin-bottom:24px;">' +
-          state.scores.map(function(s, i) {
-            return '<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f2f2f2;font-size:0.9rem;">' +
-              '<span style="font-weight:600;color:#1B3A5C;">' + DIMENSIONS[i] + '</span>' +
-              '<span style="font-weight:700;color:#1B3A5C;">' + s.toFixed(1) + ' / 5.0</span>' +
-            '</div>';
-          }).join('') +
-        '</div>' +
-        '<div style="font-size:0.9rem;line-height:1.6;color:#444;margin-bottom:20px;">' + state.reifegrad.desc + '</div>' +
-        ((state.meta && (state.meta.zeitinvest || state.meta.zeitersparnis)) ?
-          '<div style="margin-bottom:20px;padding:14px 20px;background:#F8F9FA;border-radius:8px;">' +
-            '<div style="font-weight:700;font-size:0.85rem;color:#1B3A5C;margin-bottom:10px;">Dein Zeitprofil <span style="font-weight:400;font-size:0.75rem;color:#777;">(wird nicht bewertet)</span></div>' +
-            (state.meta.zeitinvest ? '<div style="font-size:0.85rem;margin-bottom:6px;"><strong>Lernzeit/Woche:</strong> ' + state.meta.zeitinvest.label + '</div>' : '') +
-            (state.meta.zeitersparnis ? '<div style="font-size:0.85rem;"><strong>Zeitersparnis/Woche:</strong> ' + state.meta.zeitersparnis.label + '</div>' : '') +
-          '</div>' : '') +
-        (feedbackHtml ?
-          '<div style="background:#f2f2f2;border-left:4px solid #2E7D32;padding:16px 20px;border-radius:0 8px 8px 0;margin-bottom:20px;">' +
-            '<div style="font-weight:700;font-size:0.85rem;color:#1B3A5C;margin-bottom:8px;">Dein KI-Coach sagt:</div>' +
-            '<div style="font-size:0.88rem;line-height:1.6;color:#444;">' + feedbackHtml + '</div>' +
-          '</div>' : '') +
-      '</div>' +
-      '<div style="text-align:center;font-size:0.72rem;color:#999;padding:14px 32px;border-top:1px solid #f2f2f2;">' +
-        'KAEFER KI-Programm 2026 | Erstellt mit dem KI-Reifegrad-Assessment' +
-      '</div>' +
-    '</div>';
-
-  // Overlay anzeigen (z-index HÖHER als pdfEl, damit User nichts sieht)
-  const overlay = document.createElement('div');
-  overlay.style.cssText = 'position:fixed;inset:0;background:#F8F9FA;z-index:100000;display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;color:#1B3A5C;font-size:1rem;gap:10px;';
-  overlay.innerHTML = '<div style="display:flex;gap:4px;"><span style="width:6px;height:6px;background:#1B3A5C;border-radius:50%;animation:pulse 1.2s ease infinite;"></span><span style="width:6px;height:6px;background:#1B3A5C;border-radius:50%;animation:pulse 1.2s ease infinite 0.2s;"></span><span style="width:6px;height:6px;background:#1B3A5C;border-radius:50%;animation:pulse 1.2s ease infinite 0.4s;"></span></div> PDF wird erstellt…';
-  document.body.appendChild(overlay);
-  document.body.appendChild(pdfEl);
-
-  const opt = {
-    margin: [8, 8, 8, 8],
-    filename: 'KI-Assessment_' + state.name.replace(/\s+/g, '_') + '_' + date.replace(/\./g, '-') + '.pdf',
-    image: { type: 'jpeg', quality: 0.95 },
-    html2canvas: { scale: 2, useCORS: true, logging: false, scrollY: 0, windowWidth: 700 },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  };
-
-  // 500ms warten, damit Browser das Element vollständig rendert
-  setTimeout(function() {
-    html2pdf().set(opt).from(pdfEl).save().then(function() {
-      document.body.removeChild(pdfEl);
-      document.body.removeChild(overlay);
-    }).catch(function(err) {
-      console.error('PDF-Fehler:', err);
-      try { document.body.removeChild(pdfEl); } catch(e) {}
-      try { document.body.removeChild(overlay); } catch(e) {}
-      alert('Der PDF-Export hat leider nicht funktioniert. Tipp: Mache einen Screenshot deines Ergebnisses!');
+  try {
+    const response = await fetch(PROXY_URL + '/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     });
-  }, 500);
+
+    if (response.ok) {
+      // Erfolg anzeigen
+      const pending = $('submit-pending');
+      const success = $('submit-success');
+      if (pending) pending.style.display = 'none';
+      if (success) success.style.display = 'block';
+    }
+  } catch (e) {
+    // Stilles Scheitern — User-Experience nicht beeinträchtigen
+    console.warn('Auto-Submit fehlgeschlagen:', e);
+  }
 }
-
-// ==================== EMAIL ====================
-$('btn-email').addEventListener('click', () => {
-  const date = new Date().toLocaleDateString('de-DE');
-  const subject = encodeURIComponent(`KI-Assessment: ${state.name} - ${state.dept} - ${state.reifegrad.label}`);
-
-  const zeitInfo = [];
-  if (state.meta?.zeitinvest) zeitInfo.push(`Lernzeit/Woche: ${state.meta.zeitinvest.label}`);
-  if (state.meta?.zeitersparnis) zeitInfo.push(`Zeitersparnis/Woche: ${state.meta.zeitersparnis.label}`);
-
-  const body = encodeURIComponent(
-    `Hallo Nina,\n\nhier mein KI-Assessment-Ergebnis:\n\n` +
-    `Name: ${state.name}\n` +
-    `Abteilung: ${state.dept}\n` +
-    `Datum: ${date}\n\n` +
-    `--- REIFEGRAD ---\n` +
-    `Gesamt: ${state.gesamtScore.toFixed(1)} / 5.0 (${state.reifegrad.label})\n` +
-    state.scores.map((s, i) => `${DIM_SHORT[i]}: ${s.toFixed(1)}`).join(' | ') +
-    `\n\n` +
-    (zeitInfo.length ? `--- ZEITPROFIL ---\n${zeitInfo.join('\n')}\n\n` : '') +
-    `Viele Gruesse\n${state.name}`
-  );
-
-  const mailtoUrl = `mailto:Nina.Lindner.External@kaefer.com?subject=${subject}&body=${body}`;
-
-  // Robuster als window.location.href: simuliert <a>-Klick
-  const link = document.createElement('a');
-  link.href = mailtoUrl;
-  link.style.display = 'none';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-});
 
 // ==================== RETRY ====================
 $('btn-retry').addEventListener('click', () => {
