@@ -1212,8 +1212,12 @@ body {
 <script>
 // ==================== CONFIGURATION ====================
 const PROXY_URL = 'https://kaefer-ki-proxy.nina-lindner.workers.dev';
-// Zugangscode (einfacher Hash-Vergleich, kein echter Sicherheitsmechanismus)
-const ACCESS_HASH = 'e2fe66'; // Hash von 'KAEFER2026'
+// Zugangscodes → Wave-Zuordnung (Code bestimmt automatisch T0/T1)
+const ACCESS_CODES = {
+  '9af814': 'T0',  // BASELINEMAERZ
+  '961852': 'T1',  // FOLLOWUPJUNI
+};
+let currentWave = 'T0'; // wird beim Login gesetzt
 
 // ==================== QUESTIONS DATA ====================
 const DIMENSIONS = [
@@ -1392,7 +1396,10 @@ const btnAccess = $('btn-access');
 function checkAccess() {
   const code = accessInput.value.trim().toUpperCase();
   if (!code) return;
-  if (simpleHash(code) === ACCESS_HASH) {
+  const hash = simpleHash(code);
+  const wave = ACCESS_CODES[hash];
+  if (wave) {
+    currentWave = wave;
     showScreen('screen-start');
     accessError.textContent = '';
   } else {
@@ -2049,11 +2056,8 @@ function showFeedback(text) {
 
 // ==================== ANONYMOUS AUTO-SUBMIT ====================
 async function submitResultsAnonymously() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const wave = urlParams.get('wave') || 'T0';
-
   const payload = {
-    wave: wave,
+    wave: currentWave,
     scores: state.scores,
     gesamtScore: state.gesamtScore,
     reifegrad: state.reifegrad.label,
