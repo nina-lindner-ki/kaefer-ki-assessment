@@ -1180,40 +1180,6 @@ const PROXY_URL = 'https://kaefer-ki-proxy.nina-lindner.workers.dev';
 // Zugangscode (einfacher Hash-Vergleich, kein echter Sicherheitsmechanismus)
 const ACCESS_HASH = 'e2fe66'; // Hash von 'KAEFER2026'
 
-// ==================== ACCESS GATE ====================
-function simpleHash(str) {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = ((hash << 5) - hash) + str.charCodeAt(i);
-    hash = hash & 0xFFFFFF;
-  }
-  return hash.toString(16);
-}
-
-const accessInput = $('access-code');
-const accessError = $('access-error');
-const btnAccess = $('btn-access');
-
-function checkAccess() {
-  const code = accessInput.value.trim().toUpperCase();
-  if (!code) return;
-
-  if (simpleHash(code) === ACCESS_HASH) {
-    showScreen('screen-start');
-    accessError.textContent = '';
-  } else {
-    accessInput.classList.add('error');
-    accessError.textContent = 'Falscher Code. Frag bei Nina nach!';
-    setTimeout(() => accessInput.classList.remove('error'), 500);
-  }
-}
-
-btnAccess.addEventListener('click', checkAccess);
-accessInput.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') checkAccess();
-  accessError.textContent = '';
-});
-
 // ==================== QUESTIONS DATA ====================
 const DIMENSIONS = [
   'KI-Wissen & Einordnung',
@@ -1374,6 +1340,39 @@ function showScreen(screenId) {
   $(screenId).classList.add('active');
   window.scrollTo(0, 0);
 }
+
+// ==================== ACCESS GATE ====================
+function simpleHash(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash) + str.charCodeAt(i);
+    hash = hash & 0xFFFFFF;
+  }
+  return hash.toString(16);
+}
+
+const accessInput = $('access-code');
+const accessError = $('access-error');
+const btnAccess = $('btn-access');
+
+function checkAccess() {
+  const code = accessInput.value.trim().toUpperCase();
+  if (!code) return;
+  if (simpleHash(code) === ACCESS_HASH) {
+    showScreen('screen-start');
+    accessError.textContent = '';
+  } else {
+    accessInput.classList.add('error');
+    accessError.textContent = 'Falscher Code. Frag bei Nina nach!';
+    setTimeout(() => accessInput.classList.remove('error'), 500);
+  }
+}
+
+btnAccess.addEventListener('click', checkAccess);
+accessInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') checkAccess();
+  accessError.textContent = '';
+});
 
 // ==================== START SCREEN ====================
 const inputName = $('input-name');
