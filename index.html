@@ -1251,10 +1251,10 @@ const QUESTIONS = [
   ]},
   { dim: 0, text: 'Der AI Chat hat dir gerade einen Angebotstext für einen Kunden geschrieben. Er liest sich gut, klingt professionell, die Zahlen sehen plausibel aus. Was machst du?', answers: [
     'Perfekt — ab damit an den Kunden, die KI weiß was sie tut',
-    'Ich lese nochmal drüber, ob es sich gut liest',
-    'Ich prüfe die Fakten und Zahlen — die KI erfindet manchmal welche',
+    'Ich lese nochmal drüber, ob es sich gut anhört',
+    'Ich prüfe gezielt die Fakten und Zahlen — die KI erfindet manchmal welche',
     'Ich nutze den KI-Vorschlag als Basis, schreibe aber sicherheitshalber alles nochmal selbst',
-    'Ich prüfe alles, verbessere wo nötig — und dann ab in den normalen Freigabeprozess'
+    'Ich prüfe Inhalt, Zahlen und Ton — passe an, was nötig ist, und gebe es dann in den normalen Freigabeprozess'
   ]},
   // Dimension 1: Nutzung im Arbeitsalltag (3 Fragen)
   { dim: 1, text: 'Wie oft hast du den KAEFER AI Chat in den letzten 7 Tagen für eine echte Arbeitsaufgabe genutzt — nicht zum Testen, sondern um etwas zu erledigen?', answers: [
@@ -1295,12 +1295,12 @@ const QUESTIONS = [
     'Hab ich längst gemacht — und ich wähle auch bewusst das passende Sprachmodell je nach Aufgabe'
   ]},
   // Dimension 2: Prompt-Kompetenz (3 Fragen)
-  { dim: 2, text: 'Denk an das letzte Mal, als der AI Chat ein Ergebnis geliefert hat, das nicht gepasst hat. Was hast du tatsächlich gemacht?', answers: [
-    'Ich hab aufgegeben und es selbst geschrieben',
-    'Ich hab den gleichen Prompt nochmal geschickt',
-    'Ich hab den Prompt umformuliert',
-    'Ich hab der KI gesagt, was konkret nicht passt, und weiter verfeinert',
-    'Ich hab den Prompt-Verbesserer genutzt und iteriert, bis es gepasst hat'
+  { dim: 2, text: 'Stell dir vor, der AI Chat liefert dir ein Ergebnis, das nicht passt. Was würdest du tun?', multi: true, answerWeights: [0, 0, 1, 2, 2], answers: [
+    'Kam bisher nicht vor bzw. hab den AI Chat noch nicht so genutzt',
+    'Aufgeben und es lieber selbst schreiben',
+    'Den Prompt umformulieren und es nochmal probieren',
+    'Der KI sagen, was konkret nicht passt, und im Dialog weiter verfeinern',
+    'Den Prompt-Verbesserer nutzen, um meine Eingabe zu optimieren'
   ]},
   { dim: 2, text: 'Du brauchst eine professionelle Projektbeschreibung für einen Kunden. Wie würdest du den AI Chat dafür nutzen?', answers: [
     'Ich würde schreiben: „Schreib mir eine Projektbeschreibung"',
@@ -1310,11 +1310,11 @@ const QUESTIONS = [
     'Rolle, Kontext, Beispiel, Formatvorgabe — und ich verfeinere schrittweise im Dialog'
   ]},
   { dim: 2, text: 'Hast du im AI Chat eigene Instructions, Presets oder Silos angelegt — nicht nur angeschaut, sondern selbst erstellt?', answers: [
-    'Nein, noch nichts davon',
-    'Ich habe mir bestehende angeschaut',
-    'Ich habe eins davon selbst erstellt',
-    'Ich habe mehrere erstellt und nutze sie regelmäßig',
-    'Ich habe welche erstellt UND öffentlich für andere freigegeben'
+    'Nein, ich weiß nicht genau, was das ist',
+    'Ich weiß, was es ist, habe aber noch nichts selbst erstellt',
+    'Ich habe eins davon selbst erstellt und ausprobiert',
+    'Ich habe mehrere erstellt und nutze sie regelmäßig für meine Arbeit',
+    'Ich habe welche erstellt, nutze sie regelmäßig UND habe sie öffentlich für Kolleg:innen freigegeben'
   ]},
   // Dimension 3: Spielregeln & Datenbewusstsein (2 Fragen)
   { dim: 3, text: 'Ein Kollege will schnell eine Antwort und tippt seine Frage in ChatGPT — inklusive Kundennamen und Projektdetails. Was sagst du?', answers: [
@@ -1328,11 +1328,11 @@ const QUESTIONS = [
     'Klar, hab ich selbst geschrieben',
     'Ähm\u2026 ja, so ungefähr',
     'Die KI hat\u2019s geschrieben, ich hab\u2019s nur abgeschickt',
-    'Ja, mit Unterstützung vom AI Chat — ich hab\u2019s geprüft und angepasst',
-    'Ich erwähne es von mir aus: AI Chat als Werkzeug genutzt, Ergebnis fachlich geprüft und verantwortet'
+    'Ehrlich, wenn er fragt: Ja, mit Unterstützung vom AI Chat — ich hab\u2019s aber geprüft und angepasst',
+    'Ich hätte es von mir aus schon vorher erwähnt — für mich gehört Transparenz bei KI-Nutzung dazu'
   ]},
   // Dimension 4: Weitergabe & Multiplikation (2 Fragen)
-  { dim: 4, text: 'Hast du in den letzten 14 Tagen einem Kollegen oder einer Kollegin etwas zum Thema KI gezeigt, erklärt oder empfohlen?', answers: [
+  { dim: 4, text: 'Hast du in den letzten 14 Tagen einem Kollegen oder einer Kollegin etwas zum Thema KI gezeigt, erklärt oder empfohlen?', multi: true, answerWeights: [0, 0, 1, 2, 2], answers: [
     'Nein, das Thema kam nicht auf',
     'Ich hab mal erwähnt, dass es den AI Chat gibt',
     'Ich hab jemandem kurz gezeigt, wie man reinkommt',
